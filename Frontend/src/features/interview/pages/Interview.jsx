@@ -1,193 +1,277 @@
 import React, { useState, useEffect } from 'react'
-import '../style/interview.scss'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
-
-
+import { 
+  Code2, 
+  MessageSquare, 
+  Map, 
+  Download, 
+  ChevronDown, 
+  Target, 
+  AlertTriangle,
+  CheckCircle2,
+  ArrowLeft
+} from 'lucide-react'
 
 const NAV_ITEMS = [
-    { id: 'technical', label: 'Technical Questions', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>) },
-    { id: 'behavioral', label: 'Behavioral Questions', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>) },
-    { id: 'roadmap', label: 'Road Map', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11" /></svg>) },
+    { id: 'technical', label: 'Technical Intelligence', icon: <Code2 size={18} /> },
+    { id: 'behavioral', label: 'Behavioral Strategy', icon: <MessageSquare size={18} /> },
+    { id: 'roadmap', label: 'Preparation Roadmap', icon: <Map size={18} /> },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────────────────
+
 const QuestionCard = ({ item, index }) => {
-    const [ open, setOpen ] = useState(false)
+    const [open, setOpen] = useState(false)
     return (
-        <div className='q-card'>
-            <div className='q-card__header' onClick={() => setOpen(o => !o)}>
-                <span className='q-card__index'>Q{index + 1}</span>
-                <p className='q-card__question'>{item.question}</p>
-                <span className={`q-card__chevron ${open ? 'q-card__chevron--open' : ''}`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            className={`group mb-4 rounded-2xl border transition-all duration-300 ${open ? 'bg-white/[0.04] border-pink-500/30 shadow-lg shadow-pink-500/5' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}
+        >
+            <div 
+                className='flex items-start gap-4 p-5 cursor-pointer' 
+                onClick={() => setOpen(!open)}
+            >
+                <span className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-black border transition-colors ${open ? 'bg-pink-500 border-pink-500 text-white' : 'bg-white/5 border-white/10 text-gray-500 group-hover:text-white'}`}>
+                    Q{index + 1}
                 </span>
+                <p className={`flex-1 text-sm font-bold leading-relaxed transition-colors ${open ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                    {item.question}
+                </p>
+                <ChevronDown size={18} className={`text-gray-600 transition-transform duration-300 ${open ? 'rotate-180 text-pink-500' : ''}`} />
             </div>
-            {open && (
-                <div className='q-card__body'>
-                    <div className='q-card__section'>
-                        <span className='q-card__tag q-card__tag--intention'>Intention</span>
-                        <p>{item.intention}</p>
-                    </div>
-                    <div className='q-card__section'>
-                        <span className='q-card__tag q-card__tag--answer'>Model Answer</span>
-                        <p>{item.answer}</p>
-                    </div>
-                </div>
-            )}
-        </div>
+
+            <AnimatePresence>
+                {open && (
+                    <motion.div 
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className='overflow-hidden border-t border-white/5'
+                    >
+                        <div className='p-6 space-y-6 bg-black/20'>
+                            <div className='space-y-2'>
+                                <span className='text-[10px] font-black uppercase tracking-[0.2em] text-pink-500/80'>Evaluator's Intention</span>
+                                <p className='text-sm text-gray-400 leading-relaxed italic'>"{item.intention}"</p>
+                            </div>
+                            <div className='space-y-3 p-5 rounded-xl bg-emerald-500/5 border border-emerald-500/10'>
+                                <span className='text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500'>Architected Answer</span>
+                                <p className='text-sm text-gray-200 leading-relaxed font-medium'>{item.answer}</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
     )
 }
 
-const RoadMapDay = ({ day }) => (
-    <div className='roadmap-day'>
-        <div className='roadmap-day__header'>
-            <span className='roadmap-day__badge'>Day {day.day}</span>
-            <h3 className='roadmap-day__focus'>{day.focus}</h3>
+const RoadMapDay = ({ day, index }) => (
+    <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: index * 0.1 }}
+        className='relative pl-10 pb-10 group last:pb-0'
+    >
+        {/* Timeline Line */}
+        <div className="absolute left-[15px] top-2 bottom-0 w-[2px] bg-gradient-to-b from-pink-500/50 to-indigo-500/50 group-last:bg-none" />
+        
+        {/* Timeline Dot */}
+        <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-[#030014] border-2 border-pink-500 flex items-center justify-center z-10 shadow-[0_0_15px_rgba(219,39,119,0.3)]">
+            <span className="text-[10px] font-black text-white">{day.day}</span>
         </div>
-        <ul className='roadmap-day__tasks'>
-            {day.tasks.map((task, i) => (
-                <li key={i}>
-                    <span className='roadmap-day__bullet' />
-                    {task}
-                </li>
-            ))}
-        </ul>
-    </div>
+
+        <div className='bg-white/[0.03] border border-white/5 rounded-2xl p-6 hover:bg-white/[0.05] transition-all'>
+            <h3 className='text-lg font-bold text-white mb-4 flex items-center gap-3'>
+                {day.focus}
+                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-white/5 text-gray-500 uppercase tracking-widest">Phase {day.day}</span>
+            </h3>
+            <ul className='space-y-3'>
+                {day.tasks.map((task, i) => (
+                    <li key={i} className='flex items-start gap-3 text-sm text-gray-400 leading-relaxed'>
+                        <div className='mt-1.5 w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0 shadow-[0_0_8px_rgba(99,102,241,0.6)]' />
+                        {task}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    </motion.div>
 )
 
 // ── Main Component ────────────────────────────────────────────────────────────
+
 const Interview = () => {
-    const [ activeNav, setActiveNav ] = useState('technical')
+    const [activeNav, setActiveNav] = useState('technical')
     const { report, getReportById, loading, getResumePdf } = useInterview()
     const { interviewId } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        if (interviewId) {
-            getReportById(interviewId)
-        }
-    }, [ interviewId ])
-
-
+        if (interviewId) getReportById(interviewId)
+    }, [interviewId])
 
     if (loading || !report) {
         return (
-            <main className='loading-screen'>
-                <h1>Loading your interview plan...</h1>
+            <main className='min-h-screen bg-[#02000d] flex items-center justify-center'>
+                <div className="text-center">
+                    <div className="w-16 h-16 border-4 border-t-pink-500 border-white/10 rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Decrypting Intelligence...</p>
+                </div>
             </main>
         )
     }
 
-    const scoreColor =
-        report.matchScore >= 80 ? 'score--high' :
-            report.matchScore >= 60 ? 'score--mid' : 'score--low'
-
+    const scoreColor = report.matchScore >= 80 ? 'text-emerald-500' : report.matchScore >= 60 ? 'text-amber-500' : 'text-pink-500'
 
     return (
-        <div className='interview-page'>
-            <div className='interview-layout'>
+        <div className='flex h-screen bg-[#02000d] text-slate-200 overflow-hidden font-sans'>
+            
+            {/* ── LEFT SIDEBAR NAV ── */}
+            <nav className='w-72 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl flex flex-col p-6 overflow-y-auto'>
+                <button 
+                    onClick={() => navigate('/dashboard')}
+                    className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors text-xs font-black uppercase tracking-widest mb-10 group"
+                >
+                    <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform"/> Back to Logs
+                </button>
 
-                {/* ── Left Nav ── */}
-                <nav className='interview-nav'>
-                    <div className="nav-content">
-                        <p className='interview-nav__label'>Sections</p>
-                        {NAV_ITEMS.map(item => (
-                            <button
-                                key={item.id}
-                                className={`interview-nav__item ${activeNav === item.id ? 'interview-nav__item--active' : ''}`}
-                                onClick={() => setActiveNav(item.id)}
-                            >
-                                <span className='interview-nav__icon'>{item.icon}</span>
-                                {item.label}
-                            </button>
-                        ))}
-                    </div>
-                    <button
-                        onClick={() => { getResumePdf(interviewId) }}
-                        className='button primary-button' >
-                        <svg height={"0.8rem"} style={{ marginRight: "0.8rem" }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10.6144 17.7956 11.492 15.7854C12.2731 13.9966 13.6789 12.5726 15.4325 11.7942L17.8482 10.7219C18.6162 10.381 18.6162 9.26368 17.8482 8.92277L15.5079 7.88394C13.7092 7.08552 12.2782 5.60881 11.5105 3.75894L10.6215 1.61673C10.2916.821765 9.19319.821767 8.8633 1.61673L7.97427 3.75892C7.20657 5.60881 5.77553 7.08552 3.97685 7.88394L1.63658 8.92277C.868537 9.26368.868536 10.381 1.63658 10.7219L4.0523 11.7942C5.80589 12.5726 7.21171 13.9966 7.99275 15.7854L8.8704 17.7956C9.20776 18.5682 10.277 18.5682 10.6144 17.7956ZM19.4014 22.6899 19.6482 22.1242C20.0882 21.1156 20.8807 20.3125 21.8695 19.8732L22.6299 19.5353C23.0412 19.3526 23.0412 18.7549 22.6299 18.5722L21.9121 18.2532C20.8978 17.8026 20.0911 16.9698 19.6586 15.9269L19.4052 15.3156C19.2285 14.8896 18.6395 14.8896 18.4628 15.3156L18.2094 15.9269C17.777 16.9698 16.9703 17.8026 15.956 18.2532L15.2381 18.5722C14.8269 18.7549 14.8269 19.3526 15.2381 19.5353L15.9985 19.8732C16.9874 20.3125 17.7798 21.1156 18.2198 22.1242L18.4667 22.6899C18.6473 23.104 19.2207 23.104 19.4014 22.6899Z"></path></svg>
-                        Download Resume
-                    </button>
-                </nav>
+                <div className="space-y-1 flex-1">
+                    <p className='text-[10px] font-black text-gray-600 uppercase tracking-[0.2em] mb-4 px-2'>Report Sections</p>
+                    {NAV_ITEMS.map(item => (
+                        <button
+                            key={item.id}
+                            className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-sm font-bold ${activeNav === item.id ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/20' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}
+                            onClick={() => setActiveNav(item.id)}
+                        >
+                            {item.icon}
+                            {item.label}
+                        </button>
+                    ))}
+                </div>
 
-                <div className='interview-divider' />
+                <button
+                    onClick={() => getResumePdf(interviewId)}
+                    className='mt-auto flex items-center justify-center gap-2 w-full py-4 bg-white text-black rounded-xl font-black text-xs uppercase tracking-widest hover:bg-pink-500 hover:text-white transition-all shadow-xl shadow-white/5'
+                >
+                    <Download size={16} /> Download Resume
+                </button>
+            </nav>
 
-                {/* ── Center Content ── */}
-                <main className='interview-content'>
-                    {activeNav === 'technical' && (
-                        <section>
-                            <div className='content-header'>
-                                <h2>Technical Questions</h2>
-                                <span className='content-header__count'>{report.technicalQuestions.length} questions</span>
-                            </div>
-                            <div className='q-list'>
+            {/* ── CENTER SCROLLABLE CONTENT ── */}
+            <main className='flex-1 overflow-y-auto bg-gradient-to-b from-white/[0.02] to-transparent'>
+                <div className='max-w-3xl mx-auto py-16 px-8'>
+                    <motion.div 
+                        key={activeNav}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <header className='mb-12'>
+                            <h1 className='text-4xl font-black text-white tracking-tighter mb-2'>
+                                {NAV_ITEMS.find(n => n.id === activeNav).label}
+                            </h1>
+                            <p className='text-gray-500 font-medium'>
+                                {activeNav === 'roadmap' ? `A comprehensive ${report.preparationPlan.length}-day execution strategy.` : `AI-generated insights based on the target job profile.`}
+                            </p>
+                        </header>
+
+                        {activeNav === 'technical' && (
+                            <div className='space-y-2'>
                                 {report.technicalQuestions.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
                             </div>
-                        </section>
-                    )}
+                        )}
 
-                    {activeNav === 'behavioral' && (
-                        <section>
-                            <div className='content-header'>
-                                <h2>Behavioral Questions</h2>
-                                <span className='content-header__count'>{report.behavioralQuestions.length} questions</span>
-                            </div>
-                            <div className='q-list'>
+                        {activeNav === 'behavioral' && (
+                            <div className='space-y-2'>
                                 {report.behavioralQuestions.map((q, i) => (
                                     <QuestionCard key={i} item={q} index={i} />
                                 ))}
                             </div>
-                        </section>
-                    )}
+                        )}
 
-                    {activeNav === 'roadmap' && (
-                        <section>
-                            <div className='content-header'>
-                                <h2>Preparation Road Map</h2>
-                                <span className='content-header__count'>{report.preparationPlan.length}-day plan</span>
-                            </div>
-                            <div className='roadmap-list'>
-                                {report.preparationPlan.map((day) => (
-                                    <RoadMapDay key={day.day} day={day} />
+                        {activeNav === 'roadmap' && (
+                            <div className='pt-4'>
+                                {report.preparationPlan.map((day, i) => (
+                                    <RoadMapDay key={day.day} day={day} index={i} />
                                 ))}
                             </div>
-                        </section>
-                    )}
-                </main>
+                        )}
+                    </motion.div>
+                </div>
+            </main>
 
-                <div className='interview-divider' />
-
-                {/* ── Right Sidebar ── */}
-                <aside className='interview-sidebar'>
-
-                    {/* Match Score */}
-                    <div className='match-score'>
-                        <p className='match-score__label'>Match Score</p>
-                        <div className={`match-score__ring ${scoreColor}`}>
-                            <span className='match-score__value'>{report.matchScore}</span>
-                            <span className='match-score__pct'>%</span>
-                        </div>
-                        <p className='match-score__sub'>Strong match for this role</p>
-                    </div>
-
-                    <div className='sidebar-divider' />
-
-                    {/* Skill Gaps */}
-                    <div className='skill-gaps'>
-                        <p className='skill-gaps__label'>Skill Gaps</p>
-                        <div className='skill-gaps__list'>
-                            {report.skillGaps.map((gap, i) => (
-                                <span key={i} className={`skill-tag skill-tag--${gap.severity}`}>
-                                    {gap.skill}
-                                </span>
-                            ))}
+            {/* ── RIGHT METRICS SIDEBAR ── */}
+            <aside className='w-80 border-l border-white/5 bg-[#030014]/50 backdrop-blur-2xl p-8 overflow-y-auto hidden xl:block'>
+                
+                {/* Match Score Gauge */}
+                <div className='text-center mb-12'>
+                    <p className='text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-6'>Compatibility Index</p>
+                    <div className='relative w-40 h-40 mx-auto mb-6'>
+                        <svg className="w-full h-full transform -rotate-90">
+                            <circle cx="80" cy="80" r="70" fill="transparent" stroke="currentColor" strokeWidth="8" className="text-white/5" />
+                            <motion.circle 
+                                cx="80" cy="80" r="70" fill="transparent" stroke="currentColor" strokeWidth="8" 
+                                strokeDasharray={440}
+                                initial={{ strokeDashoffset: 440 }}
+                                animate={{ strokeDashoffset: 440 - (440 * report.matchScore) / 100 }}
+                                transition={{ duration: 1.5, ease: "easeOut" }}
+                                className={scoreColor}
+                            />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-5xl font-black text-white tracking-tighter">{report.matchScore}</span>
+                            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Percent</span>
                         </div>
                     </div>
+                    <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-widest ${report.matchScore >= 70 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-pink-500/10 border-pink-500/20 text-pink-500'}`}>
+                        <Target size={12} /> {report.matchScore >= 70 ? 'High Compatibility' : 'Review Required'}
+                    </div>
+                </div>
 
-                </aside>
-            </div>
+                <div className='h-[1px] bg-white/5 mb-10' />
+
+                {/* Skill Gaps Analytics */}
+                <div className='space-y-6'>
+                    <div className="flex items-center justify-between">
+                        <p className='text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]'>Delta Analysis</p>
+                        <AlertTriangle size={14} className="text-amber-500" />
+                    </div>
+                    <div className='flex flex-wrap gap-2'>
+                        {report.skillGaps.map((gap, i) => (
+                            <motion.span 
+                                key={i} 
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: i * 0.1 }}
+                                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all hover:scale-105 cursor-default ${
+                                    gap.severity === 'high' ? 'bg-pink-500/10 border-pink-500/20 text-pink-400' : 
+                                    gap.severity === 'medium' ? 'bg-amber-500/10 border-amber-500/20 text-amber-400' : 
+                                    'bg-indigo-500/10 border-indigo-500/20 text-indigo-400'
+                                }`}
+                            >
+                                {gap.skill}
+                            </motion.span>
+                        ))}
+                    </div>
+                </div>
+
+                {/* System Feedback */}
+                <div className="mt-12 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                    <div className="flex items-center gap-2 mb-3">
+                        <CheckCircle2 size={16} className="text-emerald-500" />
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">System Verdict</span>
+                    </div>
+                    <p className="text-xs text-gray-500 leading-relaxed font-medium italic">
+                        "Analysis complete. The candidate shows strong fundamentals. Focus on bridging the identified deltas in Phase 2 of the Roadmap."
+                    </p>
+                </div>
+
+            </aside>
         </div>
     )
 }
