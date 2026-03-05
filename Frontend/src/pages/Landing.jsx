@@ -38,7 +38,31 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen bg-[#030014] overflow-hidden flex flex-col items-center justify-center px-4 md:px-6 py-12">
-      
+      <div className="absolute top-0 left-0 w-full flex justify-between items-center px-6 py-6 z-20">
+  
+  {/* Logo */}
+  <div 
+    onClick={() => navigate("/")}
+    className="flex items-center gap-2 cursor-pointer"
+  >
+    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-pink-600 to-indigo-600 flex items-center justify-center">
+      <span className="text-white font-bold">N</span>
+    </div>
+
+    <span className="text-white font-black text-lg tracking-tight">
+      Nexus<span className="text-pink-500">.</span>
+    </span>
+  </div>
+
+  {/* Right actions */}
+  <button
+    onClick={() => navigate("/login")}
+    className="text-sm font-semibold text-gray-300 hover:text-white"
+  >
+    Sign In
+  </button>
+
+</div>
       {/* --- BACKGROUND ELEMENTS (Motion Optimized) --- */}
       <motion.div 
         animate={{ 
@@ -67,6 +91,7 @@ export default function Landing() {
         animate="visible"
         className="relative z-10 max-w-5xl text-center"
       >
+        
         
         {/* --- MOVING BORDER BADGE (Framer Motion Hover) --- */}
         <motion.div 
