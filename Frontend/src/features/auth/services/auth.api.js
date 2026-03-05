@@ -34,10 +34,11 @@ export async function login({ email, password }) {
 
 export async function logout() {
   try {
-    const response = await api.get("/api/auth/logout");
-
+    const response = await api.post("/api/auth/logout");
     return response.data;
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export async function getMe() {
