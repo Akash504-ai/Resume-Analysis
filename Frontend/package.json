@@ -12,12 +12,16 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
     "axios": "^1.13.6",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.35.0",
     "lucide-react": "^0.577.0",
+    "motion": "^12.35.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router": "^7.13.0",
+    "react-router-dom": "^7.13.1",
     "sass": "^1.97.3",
+    "tailwind-merge": "^3.5.0",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
