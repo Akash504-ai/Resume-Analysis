@@ -2,6 +2,7 @@ require("dotenv").config()
 const app = require("./src/app")
 const connectToDB = require("./src/config/database")
 
+// console.log("Loaded MONGO_URI:", process.env.MONGO_URI);
 connectToDB()
 
 
