@@ -122,14 +122,14 @@ export default function Landing() {
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[120px]"
+          className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px]"
+          className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px]"
         />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150"></div>
+        <div className="absolute inset-0 w-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
       </div>
 
@@ -199,54 +199,49 @@ export default function Landing() {
 
           {/* CTAs */}
           <motion.div
-  variants={itemVariants}
-  className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16"
->
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16"
+          >
+            {/* START ANALYSIS BUTTON */}
+            <motion.button
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={handleStartAnalysis}
+              className="group relative w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-fuchsia-600 to-indigo-600 text-white font-bold text-lg overflow-hidden shadow-[0_0_40px_rgba(219,39,119,0.35)] transition-all duration-300"
+            >
+              {/* glow background */}
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-500 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></span>
 
-  {/* START ANALYSIS BUTTON */}
-  <motion.button
-    whileHover={{ scale: 1.06 }}
-    whileTap={{ scale: 0.97 }}
-    onClick={handleStartAnalysis}
-    className="group relative w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-fuchsia-600 to-indigo-600 text-white font-bold text-lg overflow-hidden shadow-[0_0_40px_rgba(219,39,119,0.35)] transition-all duration-300"
-  >
-    {/* glow background */}
-    <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-500 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></span>
+              {/* animated shine */}
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-25deg] animate-[shine_1.2s_ease]" />
+              </span>
 
-    {/* animated shine */}
-    <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-      <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-25deg] animate-[shine_1.2s_ease]" />
-    </span>
+              <span className="relative z-10 flex items-center gap-2 font-semibold tracking-wide">
+                Start Analysis
+                <motion.span
+                  initial={{ x: 0 }}
+                  whileHover={{ x: 4 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  →
+                </motion.span>
+              </span>
+            </motion.button>
 
-    <span className="relative z-10 flex items-center gap-2 font-semibold tracking-wide">
-  Start Analysis
-  <motion.span
-    initial={{ x: 0 }}
-    whileHover={{ x: 4 }}
-    transition={{ type: "spring", stiffness: 300 }}
-  >
-    →
-  </motion.span>
-</span>
-  </motion.button>
+            {/* SIGN IN BUTTON */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate("/login")}
+              className="group relative w-full sm:w-auto px-10 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-white font-bold text-lg overflow-hidden transition-all duration-300 hover:border-pink-500/40 hover:bg-white/10"
+            >
+              {/* subtle glow */}
+              <span className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/20 to-indigo-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg"></span>
 
-
-  {/* SIGN IN BUTTON */}
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.97 }}
-    onClick={() => navigate("/login")}
-    className="group relative w-full sm:w-auto px-10 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-white font-bold text-lg overflow-hidden transition-all duration-300 hover:border-pink-500/40 hover:bg-white/10"
-  >
-    {/* subtle glow */}
-    <span className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/20 to-indigo-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg"></span>
-
-    <span className="relative z-10 tracking-tight">
-      Sign In
-    </span>
-  </motion.button>
-
-</motion.div>
+              <span className="relative z-10 tracking-tight">Sign In</span>
+            </motion.button>
+          </motion.div>
 
           {/* Social Proof */}
           <motion.div

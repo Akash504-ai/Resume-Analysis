@@ -18,14 +18,19 @@ import {
   CheckCircle2,
   ArrowLeft,
   X,
-  Download
+  Download,
 } from "lucide-react";
 import { useInterview } from "../features/interview/hooks/useInterview";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { reports, getReportById, report: activeReport, loading } = useInterview();
+  const {
+    reports,
+    getReportById,
+    report: activeReport,
+    loading,
+  } = useInterview();
   // const { reports } = useInterview();
   const { handleLogout } = useAuth();
   const [selectedId, setSelectedId] = useState(null);
@@ -66,10 +71,10 @@ export default function Dashboard() {
             label="Overview"
             active
           />
-          <SidebarItem 
-            icon={<FileText size={20} />} 
+          <SidebarItem
+            icon={<FileText size={20} />}
             label="My Plans"
-            onClick={()=>navigate("/plans")} 
+            onClick={() => navigate("/plans")}
           />
           <SidebarItem
             icon={<Plus size={20} />}
@@ -85,14 +90,14 @@ export default function Dashboard() {
         >
           <LogOut
             size={20}
-            className="group-hover:rotate-12 transition-transform"
+            className="group-hover:rotate-12 transition-transform mb-1"
           />
           <span className="hidden md:block font-bold text-sm">Log out</span>
         </button>
       </aside>
 
       {/* --- MAIN CONTENT AREA --- */}
-      <main className="flex-1 ml-20 md:ml-64 p-4 md:p-12 lg:p-16">
+      <main className="flex-1 ml-[190px] p-4 md:p-12 lg:p-16">
         {/* Background Effects */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full" />
