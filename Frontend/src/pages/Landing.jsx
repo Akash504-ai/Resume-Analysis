@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
 import { AnimatedTooltip } from "../../components/ui/animated-tooltip";
 import { useAuth } from "../features/auth/hooks/useAuth";
+import { WorldMap } from "../../components/ui/world-map";
 
 const people = [
   {
@@ -122,14 +123,14 @@ export default function Landing() {
         <motion.div
           animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[120px]"
+          className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-pink-600/20 rounded-full blur-[120px]"
         />
         <motion.div
           animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px]"
+          className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px]"
         />
-        <div className="absolute inset-0 w-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150"></div>
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150"></div>
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
       </div>
 
@@ -260,6 +261,92 @@ export default function Landing() {
               </span>
             </p>
           </motion.div>
+
+          {/* World Map Section */}
+          <section className="w-full py-24 flex flex-col items-center justify-center relative">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center z-20 mb-12"
+            >
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                Global Career Connectivity
+              </h2>
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto px-4">
+                Students across the world are preparing smarter interview
+                strategies using Nexus AI.
+              </p>
+            </motion.div>
+
+            {/* The Map now spans width and melts into background */}
+            <div className="w-full max-w-7xl px-4">
+              <WorldMap
+                lineColor="#ec4899"
+                dots={[
+                  // North America → Europe
+                  {
+                    start: { lat: 40.7128, lng: -74.006 },
+                    end: { lat: 51.5074, lng: -0.1278 },
+                  }, // NYC → London
+
+                  // North America → Asia
+                  {
+                    start: { lat: 37.7749, lng: -122.4194 },
+                    end: { lat: 35.6762, lng: 139.6503 },
+                  }, // SF → Tokyo
+
+                  // Europe → India
+                  {
+                    start: { lat: 48.8566, lng: 2.3522 },
+                    end: { lat: 28.6139, lng: 77.209 },
+                  }, // Paris → Delhi
+
+                  // India → Australia
+                  {
+                    start: { lat: 19.076, lng: 72.8777 },
+                    end: { lat: -33.8688, lng: 151.2093 },
+                  }, // Mumbai → Sydney
+
+                  // Europe → Africa
+                  {
+                    start: { lat: 52.52, lng: 13.405 },
+                    end: { lat: -1.2921, lng: 36.8219 },
+                  }, // Berlin → Nairobi
+
+                  // South America → Europe
+                  {
+                    start: { lat: -23.5505, lng: -46.6333 },
+                    end: { lat: 41.9028, lng: 12.4964 },
+                  }, // São Paulo → Rome
+
+                  // Africa → Asia
+                  {
+                    start: { lat: 30.0444, lng: 31.2357 },
+                    end: { lat: 1.3521, lng: 103.8198 },
+                  }, // Cairo → Singapore
+
+                  // Australia → USA
+                  {
+                    start: { lat: -33.8688, lng: 151.2093 },
+                    end: { lat: 34.0522, lng: -118.2437 },
+                  }, // Sydney → LA
+
+                  // Japan → Canada
+                  {
+                    start: { lat: 35.6762, lng: 139.6503 },
+                    end: { lat: 49.2827, lng: -123.1207 },
+                  }, // Tokyo → Vancouver
+
+                  // Middle East → Europe
+                  {
+                    start: { lat: 25.2048, lng: 55.2708 },
+                    end: { lat: 40.4168, lng: -3.7038 },
+                  }, // Dubai → Madrid
+                ]}
+              />
+            </div>
+          </section>
 
           {/* Stats Grid */}
           <motion.div
