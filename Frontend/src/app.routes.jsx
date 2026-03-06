@@ -5,7 +5,6 @@
 // import Home from "./features/interview/pages/Home";
 // import Interview from "./features/interview/pages/Interview";
 
-
 // export const router = createBrowserRouter([
 //     {
 //         path: "/login",
@@ -25,13 +24,6 @@
 //     }
 // ])
 
-
-
-
-
-
-
-
 import { createBrowserRouter } from "react-router";
 import Login from "./features/auth/pages/Login";
 import Register from "./features/auth/pages/Register";
@@ -43,19 +35,20 @@ import Interview from "./features/interview/pages/Interview";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
+import MyPlans from "./pages/MyPlans";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Landing />
+    element: <Landing />,
   },
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
   },
   {
     path: "/register",
-    element: <Register />
+    element: <Register />,
   },
   {
     path: "/dashboard",
@@ -63,7 +56,7 @@ export const router = createBrowserRouter([
       <Protected>
         <Dashboard />
       </Protected>
-    )
+    ),
   },
   {
     path: "/app",
@@ -71,7 +64,7 @@ export const router = createBrowserRouter([
       <Protected>
         <Home />
       </Protected>
-    )
+    ),
   },
   {
     path: "/interview/:interviewId",
@@ -79,10 +72,18 @@ export const router = createBrowserRouter([
       <Protected>
         <Interview />
       </Protected>
-    )
+    ),
+  },
+  {
+    path: "/plans",
+    element: (
+      <Protected>
+        <MyPlans />
+      </Protected>
+    ),
   },
   {
     path: "*",
-    element: <NotFound />
-  }
+    element: <NotFound />,
+  },
 ]);

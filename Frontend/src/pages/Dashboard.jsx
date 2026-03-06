@@ -66,7 +66,11 @@ export default function Dashboard() {
             label="Overview"
             active
           />
-          <SidebarItem icon={<FileText size={20} />} label="My Plans" />
+          <SidebarItem 
+            icon={<FileText size={20} />} 
+            label="My Plans"
+            onClick={()=>navigate("/plans")} 
+          />
           <SidebarItem
             icon={<Plus size={20} />}
             label="New Strategy"

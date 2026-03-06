@@ -1,7 +1,7 @@
-const Groq = require("groq-sdk");
-const { z } = require("zod");
-const { zodToJsonSchema } = require("zod-to-json-schema");
-const puppeteer = require("puppeteer");
+import Groq from "groq-sdk";
+import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
+import puppeteer from "puppeteer";
 
 const ai = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -181,4 +181,4 @@ The resume should be professional, ATS friendly and 1-2 pages when converted to 
   return pdfBuffer;
 }
 
-module.exports = { generateInterviewReport, generateResumePdf };
+export { generateInterviewReport, generateResumePdf };

@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken")
-const tokenBlacklistModel = require("../models/blacklist.model")
+import jwt from "jsonwebtoken";
+import tokenBlacklistModel from "../models/blacklist.model.js";
 
 async function authUser(req, res, next) {
 
@@ -37,4 +37,4 @@ async function authUser(req, res, next) {
 
 }
 
-module.exports = { authUser }
+export default { authUser }
