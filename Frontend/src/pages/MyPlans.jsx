@@ -61,8 +61,9 @@ export default function MyPlans() {
                 ?.filter((t) => t.completed)
                 .map((t) => ({
                   ...t,
-                  date: new Date(),
-                })) || [],
+                  date: t.completedAt ? new Date(t.completedAt) : null,
+                }))
+                .filter((t) => t.date !== null) || [],
           ) || [],
       ) || [];
 
@@ -105,7 +106,7 @@ export default function MyPlans() {
       plans?.flatMap(
         (p) =>
           p.days?.flatMap((d) =>
-            d.tasks?.filter((t) => t.completed).map((t) => new Date()),
+            d.tasks?.filter((t) => t.completed).map((t) => new Date(t.completedAt)),
           ) || [],
       ) || [];
 
@@ -552,7 +553,7 @@ export default function MyPlans() {
                   </div>
                 </motion.div>
               ) : (
-                <div className="h-full flex flex-col items-center justify-center py-40 border border-dashed border-white/10 rounded-[4rem] bg-white/[0.01]">
+                <div className="h-full w-130 flex flex-col items-center justify-center py-40 border border-dashed border-white/10 rounded-[4rem] bg-white/[0.01]">
                   <div className="relative mb-6">
                     <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full" />
                     <Zap className="text-pink-500 relative" size={48} />
@@ -571,7 +572,7 @@ export default function MyPlans() {
         </div>
       </div>
 
-      <style jsx global>{`
+      <style>{`
         .no-scrollbar::-webkit-scrollbar {
           display: none;
         }
