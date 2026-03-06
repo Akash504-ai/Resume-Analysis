@@ -553,19 +553,39 @@ export default function MyPlans() {
                   </div>
                 </motion.div>
               ) : (
-                <div className="h-full w-130 flex flex-col items-center justify-center py-40 border border-dashed border-white/10 rounded-[4rem] bg-white/[0.01]">
-                  <div className="relative mb-6">
-                    <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full" />
-                    <Zap className="text-pink-500 relative" size={48} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">
-                    Command Center Offline
-                  </h3>
-                  <p className="text-gray-600 text-sm max-w-xs text-center leading-relaxed">
-                    Select a tactical unit from the sidebar to initialize the
-                    neural interface.
-                  </p>
-                </div>
+                <motion.div
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.4 }}
+  className="h-full w-full flex flex-col items-center justify-center py-40 border border-dashed border-white/10 rounded-[4rem] bg-white/[0.01] relative overflow-hidden"
+>
+  
+  {/* background glow */}
+  <div className="absolute w-72 h-72 bg-pink-500/10 blur-[120px] rounded-full animate-pulse" />
+
+  {/* icon */}
+  <div className="relative mb-6">
+    <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full animate-pulse" />
+    <Zap className="text-pink-500 relative animate-pulse" size={48} />
+  </div>
+
+  {/* title */}
+  <h3 className="text-xl font-bold mb-2 tracking-tight">
+    Command Center Offline
+  </h3>
+
+  {/* description */}
+  <p className="text-gray-600 text-sm max-w-xs text-center leading-relaxed mb-6">
+    Select a tactical unit from the sidebar to initialize the neural interface.
+  </p>
+
+  {/* hint */}
+  <div className="text-[10px] text-gray-500 uppercase tracking-[0.3em] flex items-center gap-2">
+    <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
+    Awaiting System Input
+  </div>
+
+</motion.div>
               )}
             </AnimatePresence>
           </main>
