@@ -9,12 +9,16 @@ export const useAuth = () => {
 
   const navigate = useNavigate();
 
+  /* ---------------- LOGIN ---------------- */
+
   const handleLogin = async ({ email, password }) => {
     setLoading(true);
 
     try {
       const data = await login({ email, password });
+
       setUser(data.user);
+
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
@@ -22,13 +26,17 @@ export const useAuth = () => {
       setLoading(false);
     }
   };
+
+  /* ---------------- REGISTER ---------------- */
 
   const handleRegister = async ({ username, email, password }) => {
     setLoading(true);
 
     try {
       const data = await register({ username, email, password });
+
       setUser(data.user);
+
       navigate("/dashboard");
     } catch (err) {
       console.log(err);
@@ -37,12 +45,16 @@ export const useAuth = () => {
     }
   };
 
+  /* ---------------- LOGOUT ---------------- */
+
   const handleLogout = async () => {
     setLoading(true);
 
     try {
       await logout();
+
       setUser(null);
+
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -51,6 +63,22 @@ export const useAuth = () => {
     }
   };
 
+  /* ---------------- REFRESH USER ---------------- */
+
+  const refreshUser = async () => {
+    try {
+      const data = await getMe();
+
+      if (data) {
+        setUser(data.user);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /* ---------------- INITIAL AUTH CHECK ---------------- */
+
   useEffect(() => {
 
     if (user !== null) return;
@@ -58,7 +86,9 @@ export const useAuth = () => {
     const getAndSetUser = async () => {
       try {
         const data = await getMe();
+
         if (data) setUser(data.user);
+
       } catch (err) {
         console.log(err);
       } finally {
@@ -70,6 +100,13 @@ export const useAuth = () => {
 
   }, []);
 
-  return { user, loading, handleRegister, handleLogin, handleLogout };
+  return {
+    user,
+    loading,
+    handleRegister,
+    handleLogin,
+    handleLogout,
+    refreshUser
+  };
 
 };

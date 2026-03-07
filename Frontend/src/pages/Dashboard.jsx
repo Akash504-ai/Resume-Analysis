@@ -19,9 +19,11 @@ import {
   ArrowLeft,
   X,
   Download,
+  Settings,
 } from "lucide-react";
 import { useInterview } from "../features/interview/hooks/useInterview";
 import { useAuth } from "../features/auth/hooks/useAuth";
+// import Settings from "./Settings";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -81,6 +83,11 @@ export default function Dashboard() {
             label="New Strategy"
             onClick={() => navigate("/app")}
             highlight
+          />
+          <SidebarItem
+            icon={<Settings size={20} />}
+            label="Settings"
+            onClick={() => navigate("/settings")}
           />
         </nav>
 

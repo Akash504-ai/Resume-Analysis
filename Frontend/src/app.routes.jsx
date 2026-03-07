@@ -36,6 +36,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
 import MyPlans from "./pages/MyPlans";
+import Settings from "./pages/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -63,6 +64,14 @@ export const router = createBrowserRouter([
     element: (
       <Protected>
         <Home />
+      </Protected>
+    ),
+  },
+  {
+    path: "/settings",
+    element: (
+      <Protected>
+        <Settings />
       </Protected>
     ),
   },
