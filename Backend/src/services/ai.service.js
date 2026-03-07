@@ -3,9 +3,9 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import puppeteer from "puppeteer";
 
-const ai = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+// const ai = new Groq({
+//   apiKey: process.env.GROQ_API_KEY,
+// });
 
 const interviewReportSchema = z.object({
   matchScore: z
@@ -77,7 +77,12 @@ async function generateInterviewReport({
   resume,
   selfDescription,
   jobDescription,
+  apiKey,
 }) {
+  const ai = new Groq({
+    apiKey: apiKey,
+  });
+
   const prompt = `
 Return ONLY valid JSON matching this schema:
 
@@ -136,7 +141,15 @@ async function generatePdfFromHtml(htmlContent) {
   return pdfBuffer;
 }
 
-async function generateResumePdf({ resume, selfDescription, jobDescription }) {
+async function generateResumePdf({
+  resume,
+  selfDescription,
+  jobDescription,
+  apiKey,
+}) {
+  const ai = new Groq({
+    apiKey: apiKey,
+  });
   const resumePdfSchema = z.object({
     html: z.string().describe("HTML content of the resume"),
   });
