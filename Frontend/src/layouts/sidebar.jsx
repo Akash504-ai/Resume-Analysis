@@ -7,6 +7,7 @@ import {
   Plus,
   LogOut,
   Settings,
+  User,
 } from "lucide-react";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
@@ -62,6 +63,13 @@ export default function Sidebar() {
           active={location.pathname === "/settings"}
         />
       </nav>
+
+      <SidebarItem
+        icon={<User size={20} />}
+        label="Profile"
+        onClick={() => navigate("/profile")}
+        active={location.pathname === "/profile"}
+      />
 
       {/* Logout */}
       <button
