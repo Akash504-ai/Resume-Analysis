@@ -52,28 +52,36 @@ async function generateInterViewReportController(req, res) {
  * @description Controller to get interview report by interviewId.
  */
 async function getInterviewReportByIdController(req, res) {
-  if (!req.file) {
-    return res.status(400).json({
-      message: "Resume file is required",
+  try {
+
+    const { interviewId } = req.params;
+
+    const interviewReport = await interviewReportModel.findOne({
+      _id: interviewId,
+      user: req.user.id,
     });
-  }
-  const { interviewId } = req.params;
 
-  const interviewReport = await interviewReportModel.findOne({
-    _id: interviewId,
-    user: req.user.id,
-  });
+    if (!interviewReport) {
+      return res.status(404).json({
+        message: "Interview report not found.",
+      });
+    }
 
-  if (!interviewReport) {
-    return res.status(404).json({
-      message: "Interview report not found.",
+    res.status(200).json({
+      message: "Interview report fetched successfully.",
+      interviewReport,
     });
-  }
 
-  res.status(200).json({
-    message: "Interview report fetched successfully.",
-    interviewReport,
-  });
+  } catch (error) {
+
+    console.error("Get Interview Report Error:", error);
+
+    res.status(500).json({
+      message: "Server error while fetching interview report",
+      error: error.message,
+    });
+
+  }
 }
 
 /**
