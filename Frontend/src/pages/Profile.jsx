@@ -262,7 +262,6 @@ const Profile = () => {
                     exit={{ opacity: 0, y: -20 }}
                     className="bg-white/[0.02] border border-pink-500/20 rounded-[2.5rem] p-8 space-y-8"
                   >
-                    {/* BIO SECTION */}
                     <div className="space-y-4">
                       <label className="text-[10px] font-black uppercase tracking-widest text-pink-500 ml-2">Mission Bio</label>
                       <textarea
@@ -273,14 +272,13 @@ const Profile = () => {
                       />
                     </div>
 
-                    {/* ROLE SECTION */}
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-4">
                         <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400 ml-2">Designation</label>
                         <select
                           value={form.targetRole}
                           onChange={(e) => setForm({ ...form, targetRole: e.target.value })}
-                          className="w-full bg-black/40 border border-white/10 p-5 rounded-[1.5rem] focus:border-indigo-500/50 outline-none text-sm"
+                          className="w-full bg-black/40 border border-white/10 p-5 rounded-[1.5rem] focus:border-indigo-500/50 outline-none text-sm appearance-none"
                         >
                           <option value="">Select Role</option>
                           {roles.map((r) => <option key={r} value={r}>{r}</option>)}
@@ -300,11 +298,8 @@ const Profile = () => {
                       )}
                     </div>
 
-                    {/* SKILLS SECTION */}
                     <div className="space-y-6">
                       <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400 ml-2">Tech Stack Layering</label>
-                      
-                      {/* Suggested Skills Layer */}
                       <div className="flex flex-wrap gap-2 p-5 bg-white/[0.02] border border-white/5 rounded-[1.5rem]">
                         {suggestedSkills.map((skill) => (
                           <button
@@ -321,7 +316,6 @@ const Profile = () => {
                         ))}
                       </div>
 
-                      {/* Custom Skill Input Layer */}
                       <div className="flex gap-2">
                         <input
                           placeholder="Add specialized skill..."
@@ -338,7 +332,6 @@ const Profile = () => {
                         </button>
                       </div>
 
-                      {/* Removable Tags Layer */}
                       <div className="flex flex-wrap gap-2">
                         {form.skills.map((skill) => (
                           <span key={skill} className="flex items-center gap-2 bg-indigo-600/20 border border-indigo-500/30 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-300">
@@ -418,15 +411,29 @@ const Profile = () => {
   );
 };
 
-const ProfileLink = ({ label, url }) => (
-  <a
-    href={url || "#"}
-    target="_blank"
-    className="flex items-center justify-between p-4 bg-black/20 backdrop-blur-md rounded-2xl border border-white/10 hover:border-white/40 transition-all group"
-  >
-    <span className="text-sm font-bold text-white/90">{label}</span>
-    <ChevronRight size={14} className="text-white/40 group-hover:translate-x-1 transition-all" />
-  </a>
-);
+const ProfileLink = ({ label, url }) => {
+  const isLinked = url && url.trim() !== "";
+  
+  return (
+    <div
+      className={`flex items-center justify-between p-4 bg-black/20 backdrop-blur-md rounded-2xl border border-white/10 transition-all group ${
+        isLinked ? "hover:border-white/40 cursor-pointer" : "opacity-50 cursor-not-allowed"
+      }`}
+      onClick={() => isLinked && window.open(url, "_blank")}
+    >
+      <div className="flex flex-col">
+        <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{label}</span>
+        <span className={`text-sm font-bold ${isLinked ? "text-white/90" : "text-white/40"}`}>
+          {isLinked ? label : "No profile linked"}
+        </span>
+      </div>
+      {isLinked ? (
+        <ChevronRight size={14} className="text-white/40 group-hover:translate-x-1 transition-all" />
+      ) : (
+        <X size={14} className="text-white/20" />
+      )}
+    </div>
+  );
+};
 
 export default Profile;
