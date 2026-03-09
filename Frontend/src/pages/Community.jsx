@@ -12,6 +12,7 @@ const socket = io("http://localhost:3000", {
 const Community = () => {
   const { user } = useAuth();
 
+  //debugging console
   console.log("Auth user:", user);
 
   const [messages, setMessages] = useState([]);
