@@ -20,6 +20,7 @@ import {
   X,
   Download,
   Settings,
+  User,
 } from "lucide-react";
 import { useInterview } from "../features/interview/hooks/useInterview";
 import { useAuth } from "../features/auth/hooks/useAuth";
@@ -90,6 +91,13 @@ export default function Dashboard() {
             onClick={() => navigate("/settings")}
           />
         </nav>
+
+        <SidebarItem
+          icon={<User size={20} />}
+          label="Profile"
+          onClick={() => navigate("/profile")}
+          active={location.pathname === "/profile"}
+        />
 
         <button
           onClick={handleLogout}
