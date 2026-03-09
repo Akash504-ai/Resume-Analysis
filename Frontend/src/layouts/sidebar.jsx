@@ -19,7 +19,7 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-20 md:w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex flex-col items-center md:items-stretch py-8 px-4">
-      {/* Logo */}
+      
       <div
         onClick={() => navigate("/")}
         className="flex items-center gap-3 px-2 mb-12 cursor-pointer"
