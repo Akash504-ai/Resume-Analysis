@@ -1,7 +1,6 @@
 import messageModel from "../models/message.model.js";
 
 const setupChatSocket = (io) => {
-
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
@@ -18,7 +17,6 @@ const setupChatSocket = (io) => {
 
         // send chat history to the user
         socket.emit("chat-history", messages.reverse());
-
       } catch (error) {
         console.error("Error loading chat history:", error);
       }
@@ -27,20 +25,17 @@ const setupChatSocket = (io) => {
     /* When user sends message */
     socket.on("send-message", async (data) => {
       try {
-
+        console.log("Incoming message data:", data); 
         const { userId, username, message } = data;
 
-        // save message in DB
         const newMessage = await messageModel.create({
           user: userId,
-          username: username,
-          message: message,
-          channel: "community"
+          username,
+          message,
+          channel: "community",
         });
 
-        // broadcast message to everyone
         io.to("community").emit("receive-message", newMessage);
-
       } catch (error) {
         console.error("Error saving message:", error);
       }
@@ -49,9 +44,7 @@ const setupChatSocket = (io) => {
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
-
   });
-
 };
 
 export default setupChatSocket;
