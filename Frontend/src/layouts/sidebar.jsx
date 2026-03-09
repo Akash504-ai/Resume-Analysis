@@ -33,7 +33,7 @@ export default function Sidebar() {
         </span>
       </div>
 
-      {/* Navigation */}
+      {/* side navbar */}
       <nav className="flex-1 space-y-2 w-full">
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
