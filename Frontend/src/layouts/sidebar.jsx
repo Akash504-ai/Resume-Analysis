@@ -14,12 +14,15 @@ import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function Sidebar() {
   const navigate = useNavigate();
-  const { handleLogout } = useAuth();
   const location = useLocation();
+  const { handleLogout } = useAuth();
+
+  const path = location.pathname;
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-20 md:w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex flex-col items-center md:items-stretch py-8 px-4">
-      
+
+      {/* Logo */}
       <div
         onClick={() => navigate("/")}
         className="flex items-center gap-3 px-2 mb-12 cursor-pointer"
@@ -33,50 +36,53 @@ export default function Sidebar() {
         </span>
       </div>
 
-      {/* side navbar */}
+      {/* Navigation */}
       <nav className="flex-1 space-y-2 w-full">
+
         <SidebarItem
           icon={<LayoutDashboard size={20} />}
           label="Overview"
+          active={path === "/dashboard"}
           onClick={() => navigate("/dashboard")}
-          active={location.pathname === "/dashboard"}
         />
 
         <SidebarItem
           icon={<FileText size={20} />}
           label="My Plans"
+          active={path === "/plans"}
           onClick={() => navigate("/plans")}
-          active={location.pathname === "/plans"}
         />
 
         <SidebarItem
           icon={<MessageCircle size={20} />}
           label="Community"
+          active={path === "/community"}
           onClick={() => navigate("/community")}
-          active={location.pathname === "/community"}
         />
 
         <SidebarItem
           icon={<Plus size={20} />}
           label="New Strategy"
-          onClick={() => navigate("/app")}
-          active={location.pathname === "/app"}
           highlight
+          active={path === "/app"}
+          onClick={() => navigate("/app")}
         />
 
         <SidebarItem
           icon={<Settings size={20} />}
           label="Settings"
+          active={path === "/settings"}
           onClick={() => navigate("/settings")}
-          active={location.pathname === "/settings"}
         />
+
       </nav>
 
+      {/* Profile */}
       <SidebarItem
         icon={<User size={20} />}
         label="Profile"
+        active={path === "/profile"}
         onClick={() => navigate("/profile")}
-        active={location.pathname === "/profile"}
       />
 
       {/* Logout */}
@@ -86,16 +92,19 @@ export default function Sidebar() {
       >
         <LogOut
           size={20}
-          className="group-hover:rotate-12 transition-transform mb-1"
+          className="group-hover:rotate-12 transition-transform"
         />
 
-        <span className="hidden md:block font-bold text-sm">Log out</span>
+        <span className="hidden md:block font-bold text-sm">
+          Log out
+        </span>
       </button>
+
     </aside>
   );
 }
 
-/* Sidebar Item Component */
+/* Sidebar Item */
 
 function SidebarItem({
   icon,
@@ -107,11 +116,14 @@ function SidebarItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group ${
+      className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group
+      ${
         active
           ? "bg-white/10 text-white shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]"
           : "text-gray-500 hover:text-white hover:bg-white/5"
-      } ${highlight ? "text-pink-500" : ""}`}
+      }
+      ${highlight ? "text-pink-500" : ""}
+      `}
     >
       <span
         className={`${

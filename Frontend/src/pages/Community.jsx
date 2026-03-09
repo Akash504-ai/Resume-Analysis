@@ -12,14 +12,27 @@ const socket = io("http://localhost:3000", {
 const Community = () => {
   const { user } = useAuth();
 
-  //debugging console
-  console.log("Auth user:", user);
-
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+
+  const [joined, setJoined] = useState(
+    localStorage.getItem("community_joined") === "true"
+  );
+
   const bottomRef = useRef(null);
 
+  /* JOIN COMMUNITY */
+
+  const handleJoin = () => {
+    localStorage.setItem("community_joined", "true");
+    setJoined(true);
+  };
+
+  /* SOCKET CONNECTION */
+
   useEffect(() => {
+    if (!joined) return;
+
     socket.connect();
 
     socket.emit("join-community");
@@ -37,11 +50,15 @@ const Community = () => {
       socket.off("receive-message");
       socket.disconnect();
     };
-  }, []);
+  }, [joined]);
+
+  /* AUTO SCROLL */
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  /* SEND MESSAGE */
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -72,7 +89,9 @@ const Community = () => {
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto">
+
           {/* Header */}
+
           <div className="flex items-center gap-4 mb-10">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-pink-600 to-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(219,39,119,0.4)]">
               <MessageCircle size={22} className="text-white" />
@@ -88,62 +107,113 @@ const Community = () => {
             </div>
           </div>
 
-          {/* Chat container */}
-          <div className="bg-white/[0.03] border border-white/5 rounded-[2rem] p-6 backdrop-blur-xl shadow-xl flex flex-col h-[600px]">
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-              {messages.map((msg, index) => {
-                const isMe = msg.user === user?.id;
+          {/* COMMUNITY RULES SCREEN */}
 
-                return (
-                  <div
-                    key={index}
-                    className={`flex ${isMe ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-xs md:max-w-md px-4 py-3 rounded-2xl text-sm shadow-md ${
-                        isMe
-                          ? "bg-pink-600 text-white"
-                          : "bg-white/10 text-gray-200"
-                      }`}
-                    >
-                      {!isMe && (
-                        <p className="text-[10px] text-gray-400 mb-1 font-bold">
-                          {msg.username}
-                        </p>
-                      )}
-                      <p>{msg.message}</p>
-                    </div>
-                  </div>
-                );
-              })}
+          {!joined ? (
+            <div className="bg-white/[0.03] border border-white/5 rounded-[2rem] p-10 text-center backdrop-blur-xl shadow-xl">
 
-              <div ref={bottomRef} />
-            </div>
+              <h2 className="text-2xl font-bold mb-6 text-white">
+                Welcome to the Nexus Community 🚀
+              </h2>
 
-            {/* Input */}
-            <div className="mt-4 flex gap-3">
-              <input
-                value={input}
-                disabled={!user}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder={
-                  user
-                    ? "Share something with the community..."
-                    : "Loading user..."
-                }
-                className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-500/50"
-                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              />
+              <p className="text-gray-400 mb-8 max-w-xl mx-auto">
+                This community is a place for students to learn, collaborate,
+                and help each other grow.
+              </p>
+
+              <div className="text-left max-w-lg mx-auto text-gray-400 text-sm space-y-3 mb-10">
+                <p>• Be respectful to everyone.</p>
+                <p>• No spam or promotions.</p>
+                <p>• No hate speech or harassment.</p>
+                <p>• Share useful resources.</p>
+                <p>• Help other students when possible.</p>
+                <p>• Keep discussions related to learning.</p>
+              </div>
 
               <button
-                onClick={sendMessage}
-                className="px-6 py-3 bg-pink-600 hover:bg-pink-500 text-white rounded-xl font-bold transition-all"
+                onClick={handleJoin}
+                className="px-10 py-3 bg-pink-600 hover:bg-pink-500 text-white rounded-xl font-bold transition-all"
               >
-                Send
+                Join Community
               </button>
+
             </div>
-          </div>
+          ) : (
+
+            /* CHAT UI */
+
+            <div className="bg-white/[0.03] border border-white/5 rounded-[2rem] p-6 backdrop-blur-xl shadow-xl flex flex-col h-[600px]">
+
+              {/* Messages */}
+
+              <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+
+                {messages.map((msg, index) => {
+
+                  const isMe = msg.user === user?.id;
+
+                  return (
+                    <div
+                      key={index}
+                      className={`flex ${isMe ? "justify-end" : "justify-start"}`}
+                    >
+
+                      <div
+                        className={`max-w-xs md:max-w-md px-4 py-3 rounded-2xl text-sm shadow-md ${
+                          isMe
+                            ? "bg-pink-600 text-white"
+                            : "bg-white/10 text-gray-200"
+                        }`}
+                      >
+
+                        {!isMe && (
+                          <p className="text-[10px] text-gray-400 mb-1 font-bold">
+                            {msg.username}
+                          </p>
+                        )}
+
+                        <p>{msg.message}</p>
+
+                      </div>
+
+                    </div>
+                  );
+                })}
+
+                <div ref={bottomRef} />
+
+              </div>
+
+              {/* Input */}
+
+              <div className="mt-4 flex gap-3">
+
+                <input
+                  value={input}
+                  disabled={!user}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder={
+                    user
+                      ? "Share something with the community..."
+                      : "Loading user..."
+                  }
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-500/50"
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                />
+
+                <button
+                  onClick={sendMessage}
+                  className="px-6 py-3 bg-pink-600 hover:bg-pink-500 text-white rounded-xl font-bold transition-all"
+                >
+                  Send
+                </button>
+
+              </div>
+
+            </div>
+
+          )}
+
         </div>
       </main>
     </div>
@@ -151,6 +221,3 @@ const Community = () => {
 };
 
 export default Community;
-
-
-// everywhere _id -> id
