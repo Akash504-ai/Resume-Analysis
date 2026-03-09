@@ -21,6 +21,7 @@ import {
   Download,
   Settings,
   User,
+  MessageCircle,
 } from "lucide-react";
 import { useInterview } from "../features/interview/hooks/useInterview";
 import { useAuth } from "../features/auth/hooks/useAuth";
@@ -78,6 +79,12 @@ export default function Dashboard() {
             icon={<FileText size={20} />}
             label="My Plans"
             onClick={() => navigate("/plans")}
+          />
+          <SidebarItem
+            icon={<MessageCircle size={20} />}
+            label="Community"
+            onClick={() => navigate("/community")}
+            active={location.pathname === "/community"}
           />
           <SidebarItem
             icon={<Plus size={20} />}
