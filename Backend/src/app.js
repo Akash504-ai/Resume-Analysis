@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.routes.js";
 import interviewRouter from "./routes/interview.routes.js";
 import planRouter from "./routes/plan.routes.js";
 import settingsRoutes from "./routes/settings.routes.js";
+import profileRoutes from "./routes/profile.routes.js";
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use("/api/auth", authRouter);
 app.use("/api/interview", interviewRouter);
 app.use("/api/plans", planRouter);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/profile", profileRoutes);
 
 export default app;
