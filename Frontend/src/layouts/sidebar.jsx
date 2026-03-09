@@ -8,6 +8,7 @@ import {
   LogOut,
   Settings,
   User,
+  MessageCircle,
 } from "lucide-react";
 import { useAuth } from "../features/auth/hooks/useAuth";
 
@@ -46,6 +47,13 @@ export default function Sidebar() {
           label="My Plans"
           onClick={() => navigate("/plans")}
           active={location.pathname === "/plans"}
+        />
+
+        <SidebarItem
+          icon={<MessageCircle size={20} />}
+          label="Community"
+          onClick={() => navigate("/community")}
+          active={location.pathname === "/community"}
         />
 
         <SidebarItem
