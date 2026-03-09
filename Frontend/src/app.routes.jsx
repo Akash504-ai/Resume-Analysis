@@ -38,6 +38,7 @@ import Landing from "./pages/Landing";
 import MyPlans from "./pages/MyPlans";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Community from "./pages/Community";
 
 export const router = createBrowserRouter([
   {
@@ -97,6 +98,14 @@ export const router = createBrowserRouter([
     element: (
       <Protected>
         <Profile />
+      </Protected>
+    ),
+  },
+  {
+    path: "/community",
+    element: (
+      <Protected>
+        <Community />
       </Protected>
     ),
   },
