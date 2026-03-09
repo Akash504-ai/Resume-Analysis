@@ -18,6 +18,7 @@ import {
   LogOut,
   Settings,
   User,
+  MessageCircle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -233,6 +234,12 @@ export default function MyPlans() {
             label="My Plans"
             active
             onClick={() => navigate("/plans")}
+          />
+          <SidebarItem
+            icon={<MessageCircle size={20} />}
+            label="Community"
+            onClick={() => navigate("/community")}
+            active={location.pathname === "/community"}
           />
           <SidebarItem
             icon={<Plus size={20} />}
