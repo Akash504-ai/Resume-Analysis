@@ -17,6 +17,7 @@ import {
   FileText,
   LogOut,
   Settings,
+  User,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -245,6 +246,13 @@ export default function MyPlans() {
             onClick={() => navigate("/settings")}
           />
         </nav>
+
+        <SidebarItem
+          icon={<User size={20} />}
+          label="Profile"
+          onClick={() => navigate("/profile")}
+          active={location.pathname === "/profile"}
+        />
 
         <button
           onClick={handleLogout}
