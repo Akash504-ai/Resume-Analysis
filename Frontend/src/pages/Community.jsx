@@ -151,3 +151,6 @@ const Community = () => {
 };
 
 export default Community;
+
+
+// everywhere _id -> id
