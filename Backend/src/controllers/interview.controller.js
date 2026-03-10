@@ -1,8 +1,10 @@
-import * as pdfParse from "pdf-parse";
+import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
+
 import {
   generateInterviewReport,
   generateResumePdf,
 } from "../services/ai.service.js";
+
 import interviewReportModel from "../models/interviewReport.model.js";
 import userModel from "../models/user.model.js";
 import { decrypt } from "../utils/encryption.js";
@@ -13,6 +15,82 @@ import { analyzeResume } from "../services/resume.service.js";
  */
 async function generateInterViewReportController(req, res) {
   try {
+    const { selfDescription, jobDescription, mode = "full" } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Resume PDF is required.",
+      });
+    }
+
+    /* ---------------- PARSE RESUME ---------------- */
+
+    const pdf = await pdfjs.getDocument({
+      data: new Uint8Array(req.file.buffer),
+    }).promise;
+
+    let resumeText = "";
+
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      const strings = content.items.map((item) => item.str);
+      resumeText += strings.join(" ") + " ";
+    }
+
+    /* ---------------- ML ANALYSIS ---------------- */
+
+    let resumeAnalysis;
+
+    try {
+      resumeAnalysis = await analyzeResume(resumeText, jobDescription);
+      console.log("Resume Analysis:", resumeAnalysis);
+    } catch (error) {
+      console.error("Resume ML Service Error:", error);
+
+      return res.status(500).json({
+        message: "Resume analysis service unavailable.",
+      });
+    }
+
+    const matchScore = resumeAnalysis?.job_match_score || 25;
+
+    /* ---------------- FREE MODE ---------------- */
+
+    if (mode === "analysis") {
+      const title =
+        jobDescription?.split("\n")[0]?.slice(0, 60) ||
+        "Resume Analysis Report";
+
+      // const matchScore =
+      //   resumeAnalysis?.recommended_jobs?.[0]?.match_score || 25;
+
+      const interviewReport = await interviewReportModel.create({
+        user: req.user.id,
+        title,
+        resume: resumeText,
+        selfDescription,
+        jobDescription,
+
+        resumeAnalysis: {
+          resume_skills: resumeAnalysis.resume_skills || [],
+          recommended_jobs: resumeAnalysis.recommended_jobs || [],
+          career_paths: resumeAnalysis.career_paths || [],
+        },
+
+        skillGaps: resumeAnalysis.skillGaps || [],
+        live_jobs: resumeAnalysis.live_jobs || resumeAnalysis.liveJobs || [],
+
+        matchScore,
+      });
+
+      return res.status(201).json({
+        message: "Resume analysis generated successfully.",
+        interviewReport,
+      });
+    }
+
+    /* ---------------- FULL MODE ---------------- */
 
     const user = await userModel.findById(req.user.id);
 
@@ -22,36 +100,8 @@ async function generateInterViewReportController(req, res) {
       });
     }
 
-    if (!req.file) {
-      return res.status(400).json({
-        message: "Resume PDF is required.",
-      });
-    }
-
     const apiKey = decrypt(user.grokApiKey);
 
-    const resumeContent = await new pdfParse.PDFParse(
-      Uint8Array.from(req.file.buffer)
-    ).getText();
-
-    const resumeText = resumeContent.text;
-
-    const { selfDescription, jobDescription } = req.body;
-
-    // Call ML service
-    let resumeAnalysis;
-
-    try {
-      resumeAnalysis = await analyzeResume(resumeText);
-    } catch (error) {
-      console.error("Resume ML Service Error:", error);
-
-      return res.status(500).json({
-        message: "Resume analysis service unavailable.",
-      });
-    }
-
-    // Call Groq AI for questions/roadmap
     const interViewReportByAi = await generateInterviewReport({
       resume: resumeText,
       selfDescription,
@@ -60,30 +110,40 @@ async function generateInterViewReportController(req, res) {
       apiKey,
     });
 
-    // Save report in database
+    const title =
+      jobDescription?.split("\n")[0]?.slice(0, 60) ||
+      "Interview Strategy Report";
+
     const interviewReport = await interviewReportModel.create({
       user: req.user.id,
+      title,
       resume: resumeText,
       selfDescription,
       jobDescription,
-      resumeAnalysis,
-      ...interViewReportByAi,
+
+      resumeAnalysis: {
+        resume_skills: resumeAnalysis.resume_skills || [],
+        recommended_jobs: resumeAnalysis.recommended_jobs || [],
+        career_paths: resumeAnalysis.career_paths || [],
+      },
+
+      skillGaps: resumeAnalysis.skillGaps || [],
+      live_jobs: resumeAnalysis.live_jobs || resumeAnalysis.liveJobs || [],
+
+      matchScore,
     });
 
     res.status(201).json({
       message: "Interview report generated successfully.",
       interviewReport,
     });
-
   } catch (error) {
-
     console.error("Generate Interview Report Error:", error);
 
     res.status(500).json({
       message: "Server error while generating interview report",
       error: error.message,
     });
-
   }
 }
 
@@ -92,7 +152,6 @@ async function generateInterViewReportController(req, res) {
  */
 async function getInterviewReportByIdController(req, res) {
   try {
-
     const { interviewId } = req.params;
 
     const interviewReport = await interviewReportModel.findOne({
@@ -110,16 +169,13 @@ async function getInterviewReportByIdController(req, res) {
       message: "Interview report fetched successfully.",
       interviewReport,
     });
-
   } catch (error) {
-
     console.error("Get Interview Report Error:", error);
 
     res.status(500).json({
       message: "Server error while fetching interview report",
       error: error.message,
     });
-
   }
 }
 
@@ -127,7 +183,6 @@ async function getInterviewReportByIdController(req, res) {
  * @description Controller to get all interview reports of logged in user.
  */
 async function getAllInterviewReportsController(req, res) {
-
   const interviewReports = await interviewReportModel
     .find({ user: req.user.id })
     .sort({ createdAt: -1 })
@@ -146,7 +201,6 @@ async function getAllInterviewReportsController(req, res) {
  */
 async function generateResumePdfController(req, res) {
   try {
-
     const { interviewReportId } = req.params;
 
     const interviewReport =
@@ -183,16 +237,13 @@ async function generateResumePdfController(req, res) {
     });
 
     res.send(pdfBuffer);
-
   } catch (error) {
-
     console.error("Generate Resume PDF Error:", error);
 
     res.status(500).json({
       message: "Server error while generating resume PDF",
       error: error.message,
     });
-
   }
 }
 

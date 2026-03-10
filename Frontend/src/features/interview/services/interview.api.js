@@ -1,59 +1,102 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:3000",
-    withCredentials: true,
-})
-
+  baseURL: "http://localhost:3000",
+  withCredentials: true,
+});
 
 /**
- * @description Service to generate interview report based on user self description, resume and job description.
+ * Generate interview report
+ * mode:
+ *  - "analysis" → free resume analysis
+ *  - "full" → full AI strategy (requires API key)
  */
-export const generateInterviewReport = async ({ jobDescription, selfDescription, resumeFile }) => {
+export const generateInterviewReport = async ({
+  jobDescription,
+  selfDescription,
+  resumeFile,
+  mode = "full",
+}) => {
+  try {
+    const formData = new FormData();
 
-    const formData = new FormData()
-    formData.append("jobDescription", jobDescription)
-    formData.append("selfDescription", selfDescription)
-    formData.append("resume", resumeFile)
+    formData.append("jobDescription", jobDescription || "");
+    formData.append("selfDescription", selfDescription || "");
+
+    if (resumeFile) {
+      formData.append("resume", resumeFile);
+    }
+
+    // NEW: mode flag for backend
+    formData.append("mode", mode);
 
     const response = await api.post("/api/interview/", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    })
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-    return response.data
-
-}
-
+    return response.data;
+  } catch (error) {
+    console.error("Generate Interview Report Error:", error?.response?.data || error.message);
+    throw error;
+  }
+};
+/**
+ * Generate interview report
+ */
 
 /**
- * @description Service to get interview report by interviewId.
+ * Get interview report by ID
  */
 export const getInterviewReportById = async (interviewId) => {
-    const response = await api.get(`/api/interview/report/${interviewId}`)
-
-    return response.data
-}
-
+  try {
+    const response = await api.get(`/api/interview/report/${interviewId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Get Interview Report Error:",
+      error?.response?.data || error.message,
+    );
+    throw error;
+  }
+};
 
 /**
- * @description Service to get all interview reports of logged in user.
+ * Get all interview reports of the user
  */
 export const getAllInterviewReports = async () => {
-    const response = await api.get("/api/interview/")
-
-    return response.data
-}
-
+  try {
+    const response = await api.get("/api/interview/");
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Get All Interview Reports Error:",
+      error?.response?.data || error.message,
+    );
+    throw error;
+  }
+};
 
 /**
- * @description Service to generate resume pdf based on user self description, resume content and job description.
+ * Download generated resume PDF
  */
 export const generateResumePdf = async ({ interviewReportId }) => {
-    const response = await api.post(`/api/interview/resume/pdf/${interviewReportId}`, null, {
-        responseType: "blob"
-    })
+  try {
+    const response = await api.post(
+      `/api/interview/resume/pdf/${interviewReportId}`,
+      null,
+      {
+        responseType: "blob",
+      },
+    );
 
-    return response.data
-}
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Generate Resume PDF Error:",
+      error?.response?.data || error.message,
+    );
+    throw error;
+  }
+};
