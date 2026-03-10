@@ -1,21 +1,28 @@
 import pickle
 import re
 from sklearn.metrics.pairwise import cosine_similarity
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+class ResumeRequest(BaseModel):
+    resume: str
 
 # -------------------------------
 # Load trained models
 # -------------------------------
 
-with open("ml_services/tfidf_vectorizer.pkl", "rb") as f:
+with open("tfidf_vectorizer.pkl", "rb") as f:
     tfidf = pickle.load(f)
 
-with open("ml_services/tfidf_matrix.pkl", "rb") as f:
+with open("tfidf_matrix.pkl", "rb") as f:
     tfidf_matrix = pickle.load(f)
 
-with open("ml_services/job_dataset.pkl", "rb") as f:
+with open("job_dataset.pkl", "rb") as f:
     df = pickle.load(f)
 
-with open("ml_services/skill_list.pkl", "rb") as f:
+with open("skill_list.pkl", "rb") as f:
     skill_list = pickle.load(f)
 
 
@@ -116,3 +123,14 @@ if __name__ == "__main__":
     result = analyze_resume(resume)
 
     print(result)
+
+
+@app.post("/analyze")
+def analyze(data: ResumeRequest):
+
+    result = analyze_resume(data.resume)
+
+    return result
+
+
+# uvicorn app:app --reload --port 8000
