@@ -3,75 +3,45 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import puppeteer from "puppeteer";
 
-// const ai = new Groq({
-//   apiKey: process.env.GROQ_API_KEY,
-// });
+/* ---------------- SCHEMA ---------------- */
 
 const interviewReportSchema = z.object({
-  matchScore: z
-    .number()
-    .describe(
-      "A score between 0 and 100 indicating how well the candidate's profile matches the job describe",
-    ),
-  technicalQuestions: z
-    .array(
-      z.object({
-        question: z
-          .string()
-          .describe("The technical question can be asked in the interview"),
-        intention: z
-          .string()
-          .describe("The intention of interviewer behind asking this question"),
-        answer: z
-          .string()
-          .describe(
-            "How to answer this question, what points to cover, what approach to take etc.",
-          ),
-      }),
-    )
-    .describe(
-      "Technical questions that can be asked in the interview along with their intention and how to answer them",
-    ),
-  behavioralQuestions: z
-    .array(
-      z.object({
-        question: z
-          .string()
-          .describe("The technical question can be asked in the interview"),
-        intention: z
-          .string()
-          .describe("The intention of interviewer behind asking this question"),
-        answer: z
-          .string()
-          .describe(
-            "How to answer this question, what points to cover, what approach to take etc.",
-          ),
-      }),
-    )
-    .describe(
-      "Behavioral questions that can be asked in the interview along with their intention and how to answer them",
-    ),
-  skillGaps: z
-    .array(
-      z.object({
-        skill: z.string().describe("The skill which the candidate is lacking"),
-        severity: z
-          .enum(["low", "medium", "high"])
-          .describe("The severity of this skill gap"),
-      }),
-    )
-    .describe("List of skill gaps in the candidate's profile"),
-  preparationPlan: z
-    .array(
-      z.object({
-        day: z.number().describe("The day number in the preparation plan"),
-        focus: z.string().describe("The main focus of this day"),
-        tasks: z.array(z.string()).describe("Tasks for this day"),
-      }),
-    )
-    .describe("Preparation plan"),
-  title: z.string().describe("The title of the job"),
+  matchScore: z.number(),
+  title: z.string(),
+
+  technicalQuestions: z.array(
+    z.object({
+      question: z.string(),
+      intention: z.string(),
+      answer: z.string(),
+    })
+  ),
+
+  behavioralQuestions: z.array(
+    z.object({
+      question: z.string(),
+      intention: z.string(),
+      answer: z.string(),
+    })
+  ),
+
+  skillGaps: z.array(
+    z.object({
+      skill: z.string(),
+      severity: z.enum(["low", "medium", "high"]),
+    })
+  ),
+
+  preparationPlan: z.array(
+    z.object({
+      day: z.number(),
+      focus: z.string(),
+      tasks: z.array(z.string()),
+    })
+  ),
 });
+
+/* ---------------- INTERVIEW REPORT ---------------- */
 
 async function generateInterviewReport({
   resume,
@@ -79,18 +49,25 @@ async function generateInterviewReport({
   jobDescription,
   apiKey,
 }) {
-  const ai = new Groq({
-    apiKey: apiKey,
-  });
+  const ai = new Groq({ apiKey });
 
   const prompt = `
-Return ONLY valid JSON matching this schema:
+You are an expert AI interview coach.
 
+Return ONLY valid JSON.
+
+Rules:
+- Do NOT include markdown
+- Do NOT include explanations
+- ALWAYS include ALL fields
+- technicalQuestions: minimum 5
+- behavioralQuestions: minimum 5
+- preparationPlan: 5 days
+
+JSON Schema:
 ${JSON.stringify(zodToJsonSchema(interviewReportSchema))}
 
-Generate an interview report for the candidate.
-
-Resume:
+Candidate Resume:
 ${resume}
 
 Self Description:
@@ -103,31 +80,66 @@ ${jobDescription}
   const response = await ai.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
+    temperature: 0.5,
   });
 
-  let text = response.choices[0].message.content;
+  const text = response.choices[0].message.content;
 
-  // extract JSON safely
+  /* ---------- SAFE JSON EXTRACTION ---------- */
+
   const match = text.match(/\{[\s\S]*\}/);
 
   if (!match) {
-    throw new Error("No valid JSON found in AI response");
+    throw new Error("AI did not return valid JSON");
   }
 
-  const json = JSON.parse(match[0]);
+  let parsed;
 
-  return json;
+  try {
+    parsed = JSON.parse(match[0]);
+  } catch (err) {
+    console.error("JSON parse error:", err);
+    throw new Error("Invalid JSON returned by AI");
+  }
+
+  /* ---------- VALIDATE WITH ZOD ---------- */
+
+  const validated = interviewReportSchema.safeParse(parsed);
+
+  if (!validated.success) {
+    console.error("Schema validation error:", validated.error);
+
+    return {
+      matchScore: parsed.matchScore ?? 0,
+      title: parsed.title ?? "",
+
+      technicalQuestions: parsed.technicalQuestions ?? [],
+      behavioralQuestions: parsed.behavioralQuestions ?? [],
+      skillGaps: parsed.skillGaps ?? [],
+      preparationPlan: parsed.preparationPlan ?? [],
+    };
+  }
+
+  return validated.data;
 }
 
+/* ---------------- PDF GENERATION ---------------- */
+
 async function generatePdfFromHtml(htmlContent) {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    headless: "new",
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+
   const page = await browser.newPage();
 
-  await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+  await page.setContent(htmlContent, {
+    waitUntil: "networkidle0",
+  });
 
   const pdfBuffer = await page.pdf({
     format: "A4",
+    printBackground: true,
     margin: {
       top: "20mm",
       bottom: "20mm",
@@ -141,27 +153,36 @@ async function generatePdfFromHtml(htmlContent) {
   return pdfBuffer;
 }
 
+/* ---------------- RESUME PDF ---------------- */
+
 async function generateResumePdf({
   resume,
   selfDescription,
   jobDescription,
   apiKey,
 }) {
-  const ai = new Groq({
-    apiKey: apiKey,
-  });
+  const ai = new Groq({ apiKey });
+
   const resumePdfSchema = z.object({
-    html: z.string().describe("HTML content of the resume"),
+    html: z.string(),
   });
 
   const prompt = `
-Return ONLY valid JSON matching this schema:
+You are a professional resume writer.
 
+Return ONLY valid JSON.
+
+Rules:
+- Do NOT include markdown
+- Do NOT include explanation
+- Only return JSON
+
+Schema:
 ${JSON.stringify(zodToJsonSchema(resumePdfSchema))}
 
-Generate resume for the candidate.
+Generate an ATS-friendly professional resume.
 
-Resume:
+Candidate Resume:
 ${resume}
 
 Self Description:
@@ -170,26 +191,32 @@ ${selfDescription}
 Job Description:
 ${jobDescription}
 
-The resume should be professional, ATS friendly and 1-2 pages when converted to PDF.
+The resume should fit 1–2 pages when converted to PDF.
 `;
 
   const response = await ai.chat.completions.create({
     model: "llama-3.3-70b-versatile",
     messages: [{ role: "user", content: prompt }],
-    temperature: 0.7,
+    temperature: 0.5,
   });
 
-  let text = response.choices[0].message.content;
+  const text = response.choices[0].message.content;
 
   const match = text.match(/\{[\s\S]*\}/);
 
   if (!match) {
-    throw new Error("No valid JSON found in AI response");
+    throw new Error("AI did not return valid JSON");
   }
 
   const jsonContent = JSON.parse(match[0]);
 
-  const pdfBuffer = await generatePdfFromHtml(jsonContent.html);
+  const validated = resumePdfSchema.safeParse(jsonContent);
+
+  if (!validated.success) {
+    throw new Error("Invalid resume JSON format");
+  }
+
+  const pdfBuffer = await generatePdfFromHtml(validated.data.html);
 
   return pdfBuffer;
 }

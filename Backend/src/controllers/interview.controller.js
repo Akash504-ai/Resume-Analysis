@@ -127,10 +127,18 @@ async function generateInterViewReportController(req, res) {
         career_paths: resumeAnalysis.career_paths || [],
       },
 
-      skillGaps: resumeAnalysis.skillGaps || [],
-      live_jobs: resumeAnalysis.live_jobs || resumeAnalysis.liveJobs || [],
-
       matchScore,
+
+      skillGaps:
+        interViewReportByAi.skillGaps || resumeAnalysis.skillGaps || [],
+
+      technicalQuestions: interViewReportByAi.technicalQuestions || [],
+
+      behavioralQuestions: interViewReportByAi.behavioralQuestions || [],
+
+      preparationPlan: interViewReportByAi.preparationPlan || [],
+
+      live_jobs: resumeAnalysis.live_jobs || resumeAnalysis.liveJobs || [],
     });
 
     res.status(201).json({
