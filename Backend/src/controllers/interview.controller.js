@@ -6,46 +6,85 @@ import {
 import interviewReportModel from "../models/interviewReport.model.js";
 import userModel from "../models/user.model.js";
 import { decrypt } from "../utils/encryption.js";
+import { analyzeResume } from "../services/resume.service.js";
 
 /**
  * @description Controller to generate interview report based on user self description, resume and job description.
  */
 async function generateInterViewReportController(req, res) {
-  const user = await userModel.findById(req.user.id);
+  try {
 
-  if (!user || !user.grokApiKey) {
-    return res.status(400).json({
-      message: "Please add your Groq API key in Settings.",
+    const user = await userModel.findById(req.user.id);
+
+    if (!user || !user.grokApiKey) {
+      return res.status(400).json({
+        message: "Please add your Groq API key in Settings.",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Resume PDF is required.",
+      });
+    }
+
+    const apiKey = decrypt(user.grokApiKey);
+
+    const resumeContent = await new pdfParse.PDFParse(
+      Uint8Array.from(req.file.buffer)
+    ).getText();
+
+    const resumeText = resumeContent.text;
+
+    const { selfDescription, jobDescription } = req.body;
+
+    // Call ML service
+    let resumeAnalysis;
+
+    try {
+      resumeAnalysis = await analyzeResume(resumeText);
+    } catch (error) {
+      console.error("Resume ML Service Error:", error);
+
+      return res.status(500).json({
+        message: "Resume analysis service unavailable.",
+      });
+    }
+
+    // Call Groq AI for questions/roadmap
+    const interViewReportByAi = await generateInterviewReport({
+      resume: resumeText,
+      selfDescription,
+      jobDescription,
+      resumeAnalysis,
+      apiKey,
     });
+
+    // Save report in database
+    const interviewReport = await interviewReportModel.create({
+      user: req.user.id,
+      resume: resumeText,
+      selfDescription,
+      jobDescription,
+      resumeAnalysis,
+      ...interViewReportByAi,
+    });
+
+    res.status(201).json({
+      message: "Interview report generated successfully.",
+      interviewReport,
+    });
+
+  } catch (error) {
+
+    console.error("Generate Interview Report Error:", error);
+
+    res.status(500).json({
+      message: "Server error while generating interview report",
+      error: error.message,
+    });
+
   }
-
-  const apiKey = decrypt(user.grokApiKey);
-
-  const resumeContent = await new pdfParse.PDFParse(
-    Uint8Array.from(req.file.buffer),
-  ).getText();
-
-  const { selfDescription, jobDescription } = req.body;
-
-  const interViewReportByAi = await generateInterviewReport({
-    resume: resumeContent.text,
-    selfDescription,
-    jobDescription,
-    apiKey,
-  });
-
-  const interviewReport = await interviewReportModel.create({
-    user: req.user.id,
-    resume: resumeContent.text,
-    selfDescription,
-    jobDescription,
-    ...interViewReportByAi,
-  });
-
-  res.status(201).json({
-    message: "Interview report generated successfully.",
-    interviewReport,
-  });
 }
 
 /**
@@ -88,6 +127,7 @@ async function getInterviewReportByIdController(req, res) {
  * @description Controller to get all interview reports of logged in user.
  */
 async function getAllInterviewReportsController(req, res) {
+
   const interviewReports = await interviewReportModel
     .find({ user: req.user.id })
     .sort({ createdAt: -1 })
@@ -105,41 +145,55 @@ async function getAllInterviewReportsController(req, res) {
  * @description Controller to generate resume PDF based on user self description, resume and job description.
  */
 async function generateResumePdfController(req, res) {
-  const { interviewReportId } = req.params;
+  try {
 
-  const interviewReport =
-    await interviewReportModel.findById(interviewReportId);
+    const { interviewReportId } = req.params;
 
-  if (!interviewReport) {
-    return res.status(404).json({
-      message: "Interview report not found.",
+    const interviewReport =
+      await interviewReportModel.findById(interviewReportId);
+
+    if (!interviewReport) {
+      return res.status(404).json({
+        message: "Interview report not found.",
+      });
+    }
+
+    const { resume, jobDescription, selfDescription } = interviewReport;
+
+    const user = await userModel.findById(req.user.id);
+
+    if (!user || !user.grokApiKey) {
+      return res.status(400).json({
+        message: "Please add your Groq API key in Settings.",
+      });
+    }
+
+    const apiKey = decrypt(user.grokApiKey);
+
+    const pdfBuffer = await generateResumePdf({
+      resume,
+      jobDescription,
+      selfDescription,
+      apiKey,
     });
-  }
 
-  const { resume, jobDescription, selfDescription } = interviewReport;
-
-  const user = await userModel.findById(req.user.id);
-
-  if (!user || !user.grokApiKey) {
-    return res.status(400).json({
-      message: "Please add your Groq API key in Settings.",
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
     });
+
+    res.send(pdfBuffer);
+
+  } catch (error) {
+
+    console.error("Generate Resume PDF Error:", error);
+
+    res.status(500).json({
+      message: "Server error while generating resume PDF",
+      error: error.message,
+    });
+
   }
-
-  const apiKey = decrypt(user.grokApiKey);
-  const pdfBuffer = await generateResumePdf({
-    resume,
-    jobDescription,
-    selfDescription,
-    apiKey,
-  });
-
-  res.set({
-    "Content-Type": "application/pdf",
-    "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
-  });
-
-  res.send(pdfBuffer);
 }
 
 export default {
