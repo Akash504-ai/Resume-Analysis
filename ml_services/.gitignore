@@ -1,0 +1,6 @@
+# ML models
+ml_services/*.pkl
+
+# Python cache
+__pycache__/
+*.pyc
