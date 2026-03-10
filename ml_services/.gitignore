@@ -4,3 +4,6 @@ ml_services/*.pkl
 # Python cache
 __pycache__/
 *.pyc
+
+*.pkl
+ml_services/job_dataset.pkl
