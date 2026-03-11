@@ -25,7 +25,7 @@ app.use("/api/interview", interviewRouter);
 app.use("/api/plans", planRouter);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/profile", profileRoutes);
-// app.use("/api", uploadRoutes); // stoping this for now
+app.use("/api", uploadRoutes); // stoping this for now
 app.use("/api", resumeRoutes);
 
 export default app;
