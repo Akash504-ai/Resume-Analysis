@@ -19,6 +19,17 @@ const setupChatSocket = (io) => {
           .limit(50);
 
         socket.emit("chat-history", messages.reverse());
+
+        // 🔹 send pinned message if exists
+        const pinned = await messageModel.findOne({
+          channel: "community",
+          isPinned: true,
+        });
+
+        if (pinned) {
+          socket.emit("message-pinned", pinned);
+        }
+
       } catch (error) {
         console.error("Error loading chat history:", error);
       }
@@ -27,8 +38,7 @@ const setupChatSocket = (io) => {
     /* When user sends message */
     socket.on("send-message", async (data) => {
       try {
-        const { userId, username, message, replyTo, type, fileUrl, link } =
-          data;
+        const { userId, username, message, replyTo, type, fileUrl, link } = data;
 
         const newMessage = await messageModel.create({
           user: userId,
@@ -73,7 +83,6 @@ const setupChatSocket = (io) => {
 
         if (!message) return;
 
-        // only sender can delete
         if (message.user.toString() !== userId) return;
 
         message.isDeleted = true;
@@ -89,9 +98,48 @@ const setupChatSocket = (io) => {
       }
     });
 
+    /* Pin message */
+    socket.on("pin-message", async ({ messageId }) => {
+      try {
+
+        // unpin any previous pinned message
+        await messageModel.updateMany(
+          { channel: "community", isPinned: true },
+          { isPinned: false }
+        );
+
+        const pinnedMessage = await messageModel.findByIdAndUpdate(
+          messageId,
+          { isPinned: true },
+          { new: true }
+        );
+
+        io.to("community").emit("message-pinned", pinnedMessage);
+
+      } catch (error) {
+        console.error("Pin message error:", error);
+      }
+    });
+
+    /* Unpin message */
+    socket.on("unpin-message", async ({ messageId }) => {
+      try {
+
+        await messageModel.findByIdAndUpdate(messageId, {
+          isPinned: false,
+        });
+
+        io.to("community").emit("message-unpinned", { messageId });
+
+      } catch (error) {
+        console.error("Unpin message error:", error);
+      }
+    });
+
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
+
   });
 };
 
