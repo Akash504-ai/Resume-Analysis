@@ -1,46 +1,53 @@
 import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
-{
+  {
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "users",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+      required: true,
     },
 
     username: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     message: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
 
     channel: {
-        type: String,
-        default: "community"
+      type: String,
+      default: "community",
     },
 
-    // NEW FIELD → delete for everyone
+    // reply feature
+    replyTo: {
+      _id: mongoose.Schema.Types.ObjectId,
+      username: String,
+      message: String,
+    },
+
+    // delete for everyone
     isDeleted: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
 
-    // NEW FIELD → delete for me
+    // delete for me
     deletedFor: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "users"
-        }
-    ]
-},
-{
-    timestamps: true
-}
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
 );
 
 const messageModel = mongoose.model("messages", messageSchema);
