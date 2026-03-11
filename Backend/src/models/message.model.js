@@ -22,8 +22,21 @@ const messageSchema = new mongoose.Schema(
     channel: {
         type: String,
         default: "community"
-    }
+    },
 
+    // NEW FIELD → delete for everyone
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+
+    // NEW FIELD → delete for me
+    deletedFor: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "users"
+        }
+    ]
 },
 {
     timestamps: true
