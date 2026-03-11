@@ -17,6 +17,7 @@ import {
   Reply as ReplyIcon,
   X,
   CornerDownRight,
+  Pin,
 } from "lucide-react";
 import { io } from "socket.io-client";
 import Picker from "@emoji-mart/react";
@@ -39,10 +40,11 @@ const Community = () => {
     localStorage.getItem("community_joined") === "true",
   );
   const [replyingTo, setReplyingTo] = useState(null);
+  const [pinnedMessage, setPinnedMessage] = useState(null);
 
   const chatRef = useRef(null);
   const bottomRef = useRef(null);
-  const isInitialLoad = useRef(true); // Track if it's the first time history is loaded
+  const isInitialLoad = useRef(true);
 
   const handleJoin = () => {
     localStorage.setItem("community_joined", "true");
@@ -72,7 +74,6 @@ const Community = () => {
     }
   };
 
-  // Helper to snap to bottom instantly or smoothly
   const scrollToBottom = useCallback((behavior = "smooth") => {
     bottomRef.current?.scrollIntoView({ behavior });
     setNewMsgIndicator(false);
@@ -91,16 +92,39 @@ const Community = () => {
 
     socket.on("chat-history", (history) => {
       setMessages(history);
-      // On history load, snap to bottom instantly
+      // Find and set initial pinned message from history if it exists
+      const pinned = history.find(m => m.isPinned);
+      if (pinned) setPinnedMessage(pinned);
+
       setTimeout(() => {
-        scrollToBottom("auto"); 
+        scrollToBottom("auto");
         isInitialLoad.current = false;
       }, 100);
     });
 
+    // 2️⃣ Optimized Pin/Unpin Listeners
+    socket.on("message-pinned", (message) => {
+      setPinnedMessage(message);
+      setMessages((prev) =>
+        prev.map((m) => ({
+          ...m,
+          isPinned: m._id === message._id
+        }))
+      );
+    });
+
+    socket.on("message-unpinned", () => {
+      setPinnedMessage(null);
+      setMessages((prev) =>
+        prev.map((m) => ({
+          ...m,
+          isPinned: false
+        }))
+      );
+    });
+
     socket.on("receive-message", (message) => {
       setMessages((prev) => [...prev, message]);
-      // If user is already at bottom, scroll to new message. Otherwise, show indicator.
       if (isAtBottom()) {
         setTimeout(() => scrollToBottom("smooth"), 50);
       } else {
@@ -120,6 +144,8 @@ const Community = () => {
             : msg,
         ),
       );
+      // If the deleted message was the pinned one, clear it
+      setPinnedMessage(prev => prev?._id === messageId ? null : prev);
     });
 
     return () => {
@@ -127,6 +153,8 @@ const Community = () => {
       socket.off("receive-message");
       socket.off("message-deleted-for-me");
       socket.off("message-deleted-for-everyone");
+      socket.off("message-pinned");
+      socket.off("message-unpinned");
       socket.disconnect();
     };
   }, [joined, user.id, scrollToBottom, isAtBottom]);
@@ -199,6 +227,28 @@ const Community = () => {
           </div>
         </header>
 
+        {/* Pinned Message UI Bar */}
+        <AnimatePresence>
+          {pinnedMessage && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              onClick={() => scrollToMessage(pinnedMessage._id)}
+              className="bg-yellow-500/5 border-b border-yellow-500/20 px-8 py-3 text-xs text-yellow-400/80 cursor-pointer flex items-center justify-between group/pin backdrop-blur-md"
+            >
+              <div className="flex items-center gap-3 overflow-hidden">
+                <Pin size={14} className="text-yellow-500 fill-yellow-500/20" />
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <span className="font-black uppercase tracking-widest text-[10px] text-yellow-500">Pinned:</span>
+                  <span className="truncate opacity-80">{pinnedMessage.message}</span>
+                </div>
+              </div>
+              <span className="text-[9px] font-black uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity">Click to view</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="flex-1 flex overflow-hidden">
           <div className="flex-1 flex flex-col relative">
             {!joined ? (
@@ -231,7 +281,9 @@ const Community = () => {
                     {messages.map((msg, index) => {
                       const prev = messages[index - 1];
                       const showDate = !prev || new Date(prev.createdAt).toDateString() !== new Date(msg.createdAt).toDateString();
-                      const isMe = msg.user === user?.id;
+                      
+                      // 1️⃣ Fix message ownership check
+                      const isMe = msg.user?.toString() === user?.id;
 
                       return (
                         <div key={msg._id || index} id={`msg-${msg._id}`} className="flex flex-col">
@@ -268,8 +320,23 @@ const Community = () => {
                                         initial={{ opacity: 0, scale: 0.9, y: 10 }}
                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                         exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                                        className={`absolute bottom-8 ${isMe ? "left-0" : "right-0"} w-40 bg-[#030014]/95 border border-white/10 rounded-xl overflow-hidden shadow-2xl backdrop-blur-2xl`}
+                                        className={`absolute bottom-8 ${isMe ? "left-0" : "right-0"} w-40 bg-[#030014]/95 border border-white/10 rounded-xl overflow-hidden shadow-2xl backdrop-blur-2xl z-50`}
                                       >
+                                        {/* 3️⃣ & 4️⃣ Dynamic Pin/Unpin Button */}
+                                        <button
+                                          onClick={() => {
+                                            if (msg.isPinned) {
+                                              socket.emit("unpin-message", { messageId: msg._id });
+                                            } else {
+                                              socket.emit("pin-message", { messageId: msg._id });
+                                            }
+                                            setActiveMenu(null);
+                                          }}
+                                          className="w-full flex items-center gap-2 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-yellow-400 hover:bg-white/5 transition-colors border-b border-white/5"
+                                        >
+                                          <Pin size={12} /> {msg.isPinned ? "Unpin Message" : "Pin Message"}
+                                        </button>
+
                                         <button
                                           onClick={() => { setReplyingTo(msg); setActiveMenu(null); }}
                                           className="w-full flex items-center gap-2 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:bg-white/5 transition-colors border-b border-white/5"
@@ -300,7 +367,7 @@ const Community = () => {
 
                               <div className={`px-5 py-3 rounded-2xl transition-all duration-300 ${
                                 isMe ? "bg-gradient-to-br from-pink-600 to-rose-700 text-white rounded-br-none shadow-[0_10px_20px_rgba(219,39,119,0.2)]" : "bg-white/[0.05] border border-white/5 text-gray-200 rounded-bl-none hover:bg-white/[0.08]"
-                              }`}>
+                              } ${msg.isPinned ? "ring-1 ring-yellow-500/50" : ""}`}>
                                 {!isMe && <span className="block text-[10px] font-black text-pink-500 uppercase tracking-tighter mb-1">{msg.username}</span>}
 
                                 {msg.replyTo && (
@@ -323,9 +390,13 @@ const Community = () => {
                                 <p className="text-sm leading-relaxed font-medium">
                                   {msg.isDeleted ? <span className="opacity-40 italic">This message was removed</span> : msg.message}
                                 </p>
-                                <span className={`text-[9px] mt-1.5 block opacity-30 font-bold ${isMe ? "text-right" : "text-left"}`}>
-                                  {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                                </span>
+                                
+                                <div className="flex items-center justify-between mt-1.5 gap-4">
+                                  {msg.isPinned && <Pin size={10} className="text-yellow-500" />}
+                                  <span className={`text-[9px] block opacity-30 font-bold flex-1 ${isMe ? "text-right" : "text-left"}`}>
+                                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
