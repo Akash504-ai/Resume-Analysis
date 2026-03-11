@@ -1,52 +1,54 @@
 import messageModel from "../models/message.model.js";
 
+const onlineUsers = new Map();
+
 const setupChatSocket = (io) => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    /* User joins community channel */
+    /* USER JOIN COMMUNITY */
     socket.on("join-community", async ({ userId }) => {
       socket.join("community");
 
+      onlineUsers.set(userId, socket.id);
+
+      io.to("community").emit("online-users", Array.from(onlineUsers.keys()));
+
       try {
-        // load last 50 messages (excluding deleted for this user)
         const messages = await messageModel
           .find({
             channel: "community",
-            deletedFor: { $nin: userId },
+            deletedFor: { $nin: [userId] },
           })
           .sort({ createdAt: -1 })
           .limit(50);
 
         socket.emit("chat-history", messages.reverse());
 
-        // 🔹 send pinned message if exists
         const pinned = await messageModel.findOne({
           channel: "community",
           isPinned: true,
         });
 
-        if (pinned) {
-          socket.emit("message-pinned", pinned);
-        }
-
+        if (pinned) socket.emit("message-pinned", pinned);
       } catch (error) {
         console.error("Error loading chat history:", error);
       }
     });
 
-    /* When user sends message */
+    /* SEND MESSAGE */
     socket.on("send-message", async (data) => {
       try {
-        const { userId, username, message, replyTo, type, fileUrl, link } = data;
+        const { userId, username, message, replyTo, type, imageUrl, mentions } =
+          data;
 
         const newMessage = await messageModel.create({
           user: userId,
           username,
           message,
           type: type || "text",
-          fileUrl: fileUrl || null,
-          link: link || null,
+          imageUrl: imageUrl || null,
+          mentions: mentions || [],
           replyTo: replyTo
             ? {
                 _id: replyTo._id,
@@ -63,7 +65,59 @@ const setupChatSocket = (io) => {
       }
     });
 
-    /* Delete message only for the current user */
+    /* MESSAGE REACTION */
+    socket.on("add-reaction", async ({ messageId, emoji, userId }) => {
+      try {
+        const message = await messageModel.findById(messageId);
+        if (!message) return;
+
+        const existingReaction = message.reactions.find(
+          (r) => r.user.toString() === userId,
+        );
+
+        if (existingReaction) {
+          existingReaction.emoji = emoji;
+        } else {
+          message.reactions.push({ emoji, user: userId });
+        }
+
+        await message.save();
+
+        io.to("community").emit("reaction-updated", {
+          messageId,
+          reactions: message.reactions,
+        });
+      } catch (error) {
+        console.error("Reaction error:", error);
+      }
+    });
+
+    /* TYPING INDICATOR */
+    socket.on("typing-start", ({ username }) => {
+      socket.to("community").emit("user-typing", username);
+    });
+
+    socket.on("typing-stop", ({ username }) => {
+      socket.to("community").emit("user-stop-typing", username);
+    });
+
+    /* SEARCH MESSAGES */
+    socket.on("search-messages", async ({ query }) => {
+      try {
+        const results = await messageModel
+          .find({
+            $text: { $search: query },
+            channel: "community",
+          })
+          .limit(20);
+
+        socket.emit("search-results", results);
+      } catch (error) {
+        console.error("Search error:", error);
+      }
+    });
+
+    /* DELETE FOR ME */
     socket.on("delete-for-me", async ({ messageId, userId }) => {
       try {
         await messageModel.findByIdAndUpdate(messageId, {
@@ -76,11 +130,10 @@ const setupChatSocket = (io) => {
       }
     });
 
-    /* Delete message for everyone */
+    /* DELETE FOR EVERYONE */
     socket.on("delete-for-everyone", async ({ messageId, userId }) => {
       try {
         const message = await messageModel.findById(messageId);
-
         if (!message) return;
 
         if (message.user.toString() !== userId) return;
@@ -90,56 +143,56 @@ const setupChatSocket = (io) => {
 
         await message.save();
 
-        io.to("community").emit("message-deleted-for-everyone", {
-          messageId,
-        });
+        io.to("community").emit("message-deleted-for-everyone", { messageId });
       } catch (error) {
         console.error("Delete for everyone error:", error);
       }
     });
 
-    /* Pin message */
+    /* PIN MESSAGE */
     socket.on("pin-message", async ({ messageId }) => {
       try {
-
-        // unpin any previous pinned message
         await messageModel.updateMany(
           { channel: "community", isPinned: true },
-          { isPinned: false }
+          { isPinned: false },
         );
 
         const pinnedMessage = await messageModel.findByIdAndUpdate(
           messageId,
           { isPinned: true },
-          { new: true }
+          { new: true },
         );
 
         io.to("community").emit("message-pinned", pinnedMessage);
-
       } catch (error) {
         console.error("Pin message error:", error);
       }
     });
 
-    /* Unpin message */
+    /* UNPIN MESSAGE */
     socket.on("unpin-message", async ({ messageId }) => {
       try {
-
-        await messageModel.findByIdAndUpdate(messageId, {
-          isPinned: false,
-        });
+        await messageModel.findByIdAndUpdate(messageId, { isPinned: false });
 
         io.to("community").emit("message-unpinned", { messageId });
-
       } catch (error) {
         console.error("Unpin message error:", error);
       }
     });
 
+    /* USER DISCONNECT */
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
-    });
 
+      for (let [userId, sockId] of onlineUsers.entries()) {
+        if (sockId === socket.id) {
+          onlineUsers.delete(userId);
+          break;
+        }
+      }
+
+      io.to("community").emit("online-users", Array.from(onlineUsers.keys()));
+    });
   });
 };
 

@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+const reactionSchema = new mongoose.Schema(
+  {
+    emoji: {
+      type: String,
+      required: true,
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "users",
+      required: true,
+    },
+  },
+  { _id: false },
+);
+
 const messageSchema = new mongoose.Schema(
   {
     user: {
@@ -16,23 +31,18 @@ const messageSchema = new mongoose.Schema(
     message: {
       type: String,
       trim: true,
+      default: "",
     },
 
-    // NEW → message type
+    // message type
     type: {
       type: String,
-      enum: ["text", "image", "pdf", "link"],
+      enum: ["text", "image"],
       default: "text",
     },
 
-    // NEW → file url (image/pdf)
-    fileUrl: {
-      type: String,
-      default: null,
-    },
-
-    // NEW → external link
-    link: {
+    // image url
+    imageUrl: {
       type: String,
       default: null,
     },
@@ -40,6 +50,7 @@ const messageSchema = new mongoose.Schema(
     channel: {
       type: String,
       default: "community",
+      index: true,
     },
 
     // reply feature
@@ -49,12 +60,24 @@ const messageSchema = new mongoose.Schema(
       message: String,
     },
 
+    // mentions feature (@username)
+    mentions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users",
+      },
+    ],
+
+    // reactions
+    reactions: [reactionSchema],
+
     // delete for everyone
     isDeleted: {
       type: Boolean,
       default: false,
     },
 
+    // pinned message
     isPinned: {
       type: Boolean,
       default: false,
@@ -72,6 +95,9 @@ const messageSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// text search index (for message search)
+messageSchema.index({ message: "text" });
 
 const messageModel = mongoose.model("messages", messageSchema);
 
