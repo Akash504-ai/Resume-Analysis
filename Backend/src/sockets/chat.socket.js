@@ -27,12 +27,16 @@ const setupChatSocket = (io) => {
     /* When user sends message */
     socket.on("send-message", async (data) => {
       try {
-        const { userId, username, message, replyTo } = data;
+        const { userId, username, message, replyTo, type, fileUrl, link } =
+          data;
 
         const newMessage = await messageModel.create({
           user: userId,
           username,
           message,
+          type: type || "text",
+          fileUrl: fileUrl || null,
+          link: link || null,
           replyTo: replyTo
             ? {
                 _id: replyTo._id,
