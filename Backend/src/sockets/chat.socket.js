@@ -13,7 +13,7 @@ const setupChatSocket = (io) => {
         const messages = await messageModel
           .find({
             channel: "community",
-            deletedFor: { $nin: userId }
+            deletedFor: { $nin: userId },
           })
           .sort({ createdAt: -1 })
           .limit(50);
@@ -27,12 +27,19 @@ const setupChatSocket = (io) => {
     /* When user sends message */
     socket.on("send-message", async (data) => {
       try {
-        const { userId, username, message } = data;
+        const { userId, username, message, replyTo } = data;
 
         const newMessage = await messageModel.create({
           user: userId,
           username,
           message,
+          replyTo: replyTo
+            ? {
+                _id: replyTo._id,
+                username: replyTo.username,
+                message: replyTo.message,
+              }
+            : null,
           channel: "community",
         });
 
@@ -45,10 +52,9 @@ const setupChatSocket = (io) => {
     /* Delete message only for the current user */
     socket.on("delete-for-me", async ({ messageId, userId }) => {
       try {
-        await messageModel.findByIdAndUpdate(
-          messageId,
-          { $addToSet: { deletedFor: userId } }
-        );
+        await messageModel.findByIdAndUpdate(messageId, {
+          $addToSet: { deletedFor: userId },
+        });
 
         socket.emit("message-deleted-for-me", { messageId });
       } catch (error) {
