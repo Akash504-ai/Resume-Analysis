@@ -8,6 +8,7 @@ import planRouter from "./routes/plan.routes.js";
 import settingsRoutes from "./routes/settings.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import resumeRoutes from "./routes/resume.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/api/interview", interviewRouter);
 app.use("/api/plans", planRouter);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/profile", profileRoutes);
+// app.use("/api", uploadRoutes); // stoping this for now
 app.use("/api", resumeRoutes);
 
 export default app;
