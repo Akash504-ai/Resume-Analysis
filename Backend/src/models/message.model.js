@@ -83,6 +83,12 @@ const messageSchema = new mongoose.Schema(
       default: false,
     },
 
+    moderation: {
+      type: String,
+      enum: ["spam", "toxic", null],
+      default: null,
+    },
+
     // delete for me
     deletedFor: [
       {

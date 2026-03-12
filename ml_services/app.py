@@ -2,6 +2,7 @@ import os
 import pickle
 import re
 import requests
+import joblib
 from typing import List
 
 from fastapi import FastAPI, HTTPException
@@ -39,6 +40,9 @@ class ResumeRequest(BaseModel):
     resume: str
     job_description: str
 
+class Message(BaseModel):
+    text: str
+
 
 # --------------------------------------------------
 # Load ML Models
@@ -56,6 +60,12 @@ try:
     tfidf_matrix = load_pickle("tfidf_matrix.pkl")
     df = load_pickle("job_dataset.pkl")
     skill_list = load_pickle("skill_list.pkl")
+
+    toxic_model = joblib.load("toxic_model.pkl")
+    toxic_vectorizer = joblib.load("tfidf_vectorizer copy.pkl")
+
+    spam_model = joblib.load("spam_model.pkl")
+    spam_vectorizer = joblib.load("spam_vectorizer.pkl")
 
 except Exception as e:
     raise RuntimeError(f"Error loading ML models: {e}")
@@ -286,6 +296,30 @@ def analyze(data: ResumeRequest):
 
     try:
         return analyze_resume(data.resume, data.job_description)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/moderate")
+def moderate_message(message: Message):
+
+    text = message.text.strip()
+
+    if not text:
+        raise HTTPException(status_code=400, detail="Text cannot be empty")
+
+    try:
+
+        toxic_vec = toxic_vectorizer.transform([text])
+        toxic_score = float(toxic_model.predict_proba(toxic_vec)[0][1])
+
+        spam_vec = spam_vectorizer.transform([text])
+        spam_score = float(spam_model.predict_proba(spam_vec)[0][1])
+
+        return {
+            "toxic_score": round(toxic_score, 4),
+            "spam_score": round(spam_score, 4)
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

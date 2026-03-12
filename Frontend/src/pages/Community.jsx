@@ -601,6 +601,19 @@ const Community = () => {
                                   )}
                                 </p>
 
+                                {/* 🔴 AI Moderation Label */}
+                                {msg.moderation === "spam" && (
+                                  <div className="mt-1 text-[10px] text-red-400 font-bold uppercase tracking-wider">
+                                    ⚠ Spam detected
+                                  </div>
+                                )}
+
+                                {msg.moderation === "toxic" && (
+                                  <div className="mt-1 text-[10px] text-orange-400 font-bold uppercase tracking-wider">
+                                    ⚠ Toxic message detected
+                                  </div>
+                                )}
+
                                 {/* 2️⃣ Reactions UI */}
                                 {msg.reactions?.length > 0 && (
                                   <div className="flex flex-wrap gap-1 mt-2">
