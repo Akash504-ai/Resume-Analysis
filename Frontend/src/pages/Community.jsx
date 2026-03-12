@@ -21,6 +21,7 @@ import {
   Image as ImageIcon,
   Search,
   Loader2,
+  Copy,
 } from "lucide-react";
 import { io } from "socket.io-client";
 import Picker from "@emoji-mart/react";
@@ -66,6 +67,10 @@ const Community = () => {
   const bottomRef = useRef(null);
   const isInitialLoad = useRef(true);
   const typingTimeoutRef = useRef(null);
+
+  const copyMessage = (text) => {
+    navigator.clipboard.writeText(text);
+  };
 
   const handleJoin = () => {
     localStorage.setItem("community_joined", "true");
@@ -536,6 +541,15 @@ const Community = () => {
                                           className="w-full flex items-center gap-2 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:bg-white/5 border-b border-white/5"
                                         >
                                           <ReplyIcon size={12} /> Reply
+                                        </button>
+                                        <button
+                                          onClick={() => {
+                                            copyMessage(msg.message);
+                                            setActiveMenu(null);
+                                          }}
+                                          className="w-full flex items-center gap-2 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-green-400 hover:bg-white/5 border-b border-white/5"
+                                        >
+                                          <Copy size={12} /> Copy
                                         </button>
                                         {isMe && (
                                           <button
