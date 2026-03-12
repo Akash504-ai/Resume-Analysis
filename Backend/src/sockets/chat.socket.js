@@ -1,4 +1,7 @@
 import messageModel from "../models/message.model.js";
+import axios from "axios";
+
+const ML_API = "http://127.0.0.1:8000/moderate";
 
 const onlineUsers = new Map();
 
@@ -42,6 +45,21 @@ const setupChatSocket = (io) => {
         const { userId, username, message, replyTo, type, imageUrl, mentions } =
           data;
 
+        /* Call ML moderation API */
+        const moderation = await axios.post("http://127.0.0.1:8000/moderate", {
+          text: message,
+        });
+
+        const { spam_score, toxic_score } = moderation.data;
+
+        console.log("Spam score:", spam_score);
+        console.log("Toxic score:", toxic_score);
+
+        let moderationLabel = null;
+
+        if (spam_score > 0.3) moderationLabel = "spam";
+        if (toxic_score > 0.6) moderationLabel = "toxic";
+
         const newMessage = await messageModel.create({
           user: userId,
           username,
@@ -49,6 +67,7 @@ const setupChatSocket = (io) => {
           type: type || "text",
           imageUrl: imageUrl || null,
           mentions: mentions || [],
+          moderation: moderationLabel, // 🔥 NEW FIELD
           replyTo: replyTo
             ? {
                 _id: replyTo._id,
