@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { 
+  Users, 
+  FileText, 
+  MessageSquare, 
+  Activity, 
+  ShieldCheck, 
+  ArrowUpRight,
+  Database,
+  Search
+} from "lucide-react";
 import UsersTable from "../components/UsersTable";
 
 function AdminDashboard() {
-
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalResumes: 0,
@@ -12,18 +22,13 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     const fetchStats = async () => {
       try {
-
         const res = await fetch("http://localhost:3000/api/admin/stats", {
           credentials: "include"
         });
-
         const data = await res.json();
-
         setStats(data);
-
       } catch (error) {
         console.log("Failed to fetch admin stats", error);
       } finally {
@@ -32,95 +37,143 @@ function AdminDashboard() {
     };
 
     fetchStats();
-
   }, []);
 
   if (loading) {
     return (
-      <div style={{ padding: "40px" }}>
-        <h2>Loading admin data...</h2>
+      <div className="min-h-screen bg-[#02000d] flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-2 border-pink-500/20 border-t-pink-500 rounded-full animate-spin mb-4" />
+        <h2 className="text-pink-500 font-bold tracking-[0.2em] uppercase text-[10px]">Initializing Command...</h2>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: "40px", maxWidth: "1200px", margin: "auto" }}>
-
-      {/* HEADER */}
-
-      <h1 style={{ marginBottom: "30px" }}>
-        Admin Dashboard
-      </h1>
-
-
-      {/* STATS CARDS */}
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "20px",
-          marginBottom: "50px"
-        }}
-      >
-
-        <StatCard
-          title="Total Users"
-          value={stats.totalUsers}
-        />
-
-        <StatCard
-          title="Resumes Analyzed"
-          value={stats.totalResumes}
-        />
-
-        <StatCard
-          title="Community Messages"
-          value={stats.totalMessages}
-        />
-
-        <StatCard
-          title="Active Users"
-          value="0"
-        />
-
+    <div className="min-h-screen bg-[#02000d] text-slate-200 selection:bg-pink-500/30 font-sans p-6 md:p-12 lg:p-16">
+      {/* --- BACKGROUND AMBIENCE --- */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-600/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-pink-600/5 blur-[120px] rounded-full" />
       </div>
 
+      <div className="relative z-10 max-w-7xl mx-auto">
+        {/* --- HEADER --- */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <ShieldCheck size={14} className="text-pink-500" />
+              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-pink-500/80">Admin Protocol Active</span>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">
+              Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500 italic font-light">Dashboard</span>
+            </h1>
+          </div>
+          
+          <div className="hidden md:flex items-center gap-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Node: Central-01</span>
+          </div>
+        </header>
 
-      {/* USER MANAGEMENT TABLE */}
+        {/* --- STATS GRID --- */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <StatCard 
+            title="Total Users" 
+            value={stats.totalUsers} 
+            icon={<Users size={20} />} 
+            color="pink" 
+          />
+          <StatCard 
+            title="Resumes Analyzed" 
+            value={stats.totalResumes} 
+            icon={<FileText size={20} />} 
+            color="indigo" 
+          />
+          <StatCard 
+            title="Community Messages" 
+            value={stats.totalMessages} 
+            icon={<MessageSquare size={20} />} 
+            color="violet" 
+          />
+          <StatCard 
+            title="Active Users" 
+            value="0" 
+            icon={<Activity size={20} />} 
+            color="emerald" 
+          />
+        </div>
 
-      <UsersTable />
+        {/* --- USER MANAGEMENT SECTION --- */}
+        <section>
+          <div className="flex items-center gap-4 mb-8">
+            <Database size={18} className="text-gray-600" />
+            <h2 className="text-xl font-bold text-white tracking-tight shrink-0">User Management</h2>
+            <div className="h-px w-full bg-gradient-to-r from-white/10 to-transparent" />
+          </div>
 
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-2 backdrop-blur-xl shadow-2xl overflow-hidden"
+          >
+            {/* Table Header Overlay for better UI depth */}
+            <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+               <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Database Records</span>
+               <div className="flex gap-2">
+                 <div className="w-2 h-2 rounded-full bg-white/10" />
+                 <div className="w-2 h-2 rounded-full bg-white/10" />
+                 <div className="w-2 h-2 rounded-full bg-white/10" />
+               </div>
+            </div>
+            
+            <div className="p-4 overflow-x-auto">
+              <UsersTable />
+            </div>
+          </motion.div>
+        </section>
+      </div>
     </div>
   );
 }
 
-
 /* ---------------- STAT CARD COMPONENT ---------------- */
 
-function StatCard({ title, value }) {
+function StatCard({ title, value, icon, color }) {
+  const colorVariants = {
+    pink: "text-pink-500 bg-pink-500/10 border-pink-500/20",
+    indigo: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
+    violet: "text-violet-400 bg-violet-400/10 border-violet-400/20",
+    emerald: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+  };
 
   return (
-    <div
-      style={{
-        padding: "25px",
-        borderRadius: "10px",
-        background: "#f5f5f5",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
-      }}
+    <motion.div 
+      whileHover={{ y: -5, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      className="relative group bg-white/[0.03] border border-white/5 rounded-[2rem] p-8 hover:bg-white/[0.07] hover:border-white/10 transition-all duration-300 overflow-hidden"
     >
+      <div className="flex justify-between items-start mb-6 relative z-10">
+        <div className={`p-3 rounded-2xl border ${colorVariants[color]} group-hover:scale-110 transition-transform duration-500`}>
+          {icon}
+        </div>
+        <div className="p-1.5 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <ArrowUpRight size={14} className="text-gray-400" />
+        </div>
+      </div>
+      
+      <div className="relative z-10">
+        <h3 className="text-4xl font-black text-white tracking-tighter mb-1">
+          {value}
+        </h3>
+        <p className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">
+          {title}
+        </p>
+      </div>
 
-      <h4 style={{ marginBottom: "10px" }}>
-        {title}
-      </h4>
-
-      <h2>
-        {value}
-      </h2>
-
-    </div>
+      {/* Aesthetic radial gradient glow */}
+      <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 blur-[40px] rounded-full group-hover:bg-white/10 transition-colors" />
+    </motion.div>
   );
-
 }
 
 export default AdminDashboard;
