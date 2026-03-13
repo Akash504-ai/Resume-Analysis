@@ -194,9 +194,117 @@ async function getMeController(req, res) {
   }
 }
 
+async function forgotPasswordController(req, res) {
+  try {
+    const { email } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    user.resetOTP = otp;
+    user.otpExpiry = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: "no-reply@yourapp.com",
+        name: "PASO Support",
+      },
+      to: [{ email }],
+      subject: "Password Reset OTP",
+      htmlContent: `
+        <h2>Password Reset</h2>
+        <p>Your OTP code is:</p>
+        <h1>${otp}</h1>
+        <p>This code expires in 10 minutes.</p>
+      `,
+    });
+
+    res.status(200).json({
+      message: "OTP sent to email",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
+async function verifyOtpController(req, res) {
+  try {
+    const { email, otp } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user || user.resetOTP !== otp) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    if (user.otpExpiry < Date.now()) {
+      return res.status(400).json({
+        message: "OTP expired",
+      });
+    }
+
+    res.status(200).json({
+      message: "OTP verified",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
+async function resetPasswordController(req, res) {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user || user.resetOTP !== otp) {
+      return res.status(400).json({
+        message: "Invalid request",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    user.resetOTP = null;
+    user.otpExpiry = null;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Password reset successful",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
 export default {
   registerUserController,
   loginUserController,
   logoutUserController,
   getMeController,
+  forgotPasswordController,
+  verifyOtpController,
+  resetPasswordController,
 };
