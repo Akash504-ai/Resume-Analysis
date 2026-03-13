@@ -36,7 +36,7 @@ async function registerUserController(req, res) {
     });
 
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
@@ -53,6 +53,7 @@ async function registerUserController(req, res) {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -94,7 +95,7 @@ async function loginUserController(req, res) {
     }
 
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
@@ -111,6 +112,7 @@ async function loginUserController(req, res) {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -164,12 +166,15 @@ async function getMeController(req, res) {
       });
     }
 
+    res.set("Cache-Control", "no-store");
+
     res.status(200).json({
       message: "User fetched successfully",
       user: {
         id: user._id,
         username: user.username,
         email: user.email,
+        role: user.role,
         grokApiKey: !!user.grokApiKey,
       },
     });

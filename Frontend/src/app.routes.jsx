@@ -39,6 +39,8 @@ import MyPlans from "./pages/MyPlans";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
+import AdminProtected from "./features/auth/components/AdminProtected";
+import AdminDashboard from "./features/admin/pages/AdminDashboard";
 
 export const router = createBrowserRouter([
   {
@@ -107,6 +109,14 @@ export const router = createBrowserRouter([
       <Protected>
         <Community />
       </Protected>
+    ),
+  },
+  {
+    path: "/admin",
+    element: (
+      <AdminProtected>
+        <AdminDashboard />
+      </AdminProtected>
     ),
   },
   {

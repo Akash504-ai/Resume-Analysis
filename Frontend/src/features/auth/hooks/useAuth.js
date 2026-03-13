@@ -4,7 +4,6 @@ import { AuthContext } from "../auth.context";
 import { login, register, logout, getMe } from "../services/auth.api";
 
 export const useAuth = () => {
-
   const { user, setUser, loading, setLoading } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -16,10 +15,14 @@ export const useAuth = () => {
 
     try {
       const data = await login({ email, password });
-
+      console.log("LOGIN USER:", data.user);
       setUser(data.user);
 
-      navigate("/dashboard");
+      if (data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -37,7 +40,11 @@ export const useAuth = () => {
 
       setUser(data.user);
 
-      navigate("/dashboard");
+      if (data.user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.log(err);
     } finally {
@@ -80,7 +87,6 @@ export const useAuth = () => {
   /* ---------------- INITIAL AUTH CHECK ---------------- */
 
   useEffect(() => {
-
     if (user !== null) return;
 
     const getAndSetUser = async () => {
@@ -88,7 +94,6 @@ export const useAuth = () => {
         const data = await getMe();
 
         if (data) setUser(data.user);
-
       } catch (err) {
         console.log(err);
       } finally {
@@ -97,7 +102,6 @@ export const useAuth = () => {
     };
 
     getAndSetUser();
-
   }, []);
 
   return {
@@ -106,7 +110,6 @@ export const useAuth = () => {
     handleRegister,
     handleLogin,
     handleLogout,
-    refreshUser
+    refreshUser,
   };
-
 };

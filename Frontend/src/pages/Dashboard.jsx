@@ -36,9 +36,15 @@ export default function Dashboard() {
     loading,
   } = useInterview();
   // const { reports } = useInterview();
-  const { handleLogout } = useAuth();
+  const { handleLogout, user } = useAuth();
   const [selectedId, setSelectedId] = useState(null);
   const [activeTab, setActiveTab] = useState("technical");
+
+  useEffect(() => {
+    if (user?.role === "admin") {
+      navigate("/admin");
+    }
+  }, [user, navigate]);
 
   const totalReports = reports.length;
   const avgScore =
