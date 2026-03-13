@@ -84,22 +84,26 @@ function AdminDashboard() {
             color="pink" 
           />
           <StatCard 
-            title="Resumes Analyzed" 
-            value={stats.totalResumes} 
-            icon={<FileText size={20} />} 
-            color="indigo" 
-          />
-          <StatCard 
             title="Community Messages" 
             value={stats.totalMessages} 
             icon={<MessageSquare size={20} />} 
             color="violet" 
           />
           <StatCard 
-            title="Active Users" 
-            value="0" 
+            title="Resumes Analyzed"
+            value="SCANN_NG" // Glitchy text effect
+            icon={<FileText size={20} />} 
+            color="indigo" 
+            isPending={true}
+            statusLabel="Decrypting Data"
+          />
+          <StatCard 
+            title="Message Report"
+            value="OFF_LINE"
             icon={<Activity size={20} />} 
             color="emerald" 
+            isPending={true}
+            statusLabel="Establishing Link"
           />
         </div>
 
@@ -138,7 +142,7 @@ function AdminDashboard() {
 
 /* ---------------- STAT CARD COMPONENT ---------------- */
 
-function StatCard({ title, value, icon, color }) {
+function StatCard({ title, value, icon, color, isPending = false, statusLabel }) {
   const colorVariants = {
     pink: "text-pink-500 bg-pink-500/10 border-pink-500/20",
     indigo: "text-indigo-400 bg-indigo-400/10 border-indigo-400/20",
@@ -148,30 +152,48 @@ function StatCard({ title, value, icon, color }) {
 
   return (
     <motion.div 
-      whileHover={{ y: -5, scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-      className="relative group bg-white/[0.03] border border-white/5 rounded-[2rem] p-8 hover:bg-white/[0.07] hover:border-white/10 transition-all duration-300 overflow-hidden"
+      whileHover={!isPending ? { y: -5 } : {}}
+      className={`relative group border rounded-[2rem] p-8 transition-all duration-500 overflow-hidden ${
+        isPending 
+        ? "bg-white/[0.01] border-white/5 opacity-60 grayscale-[0.5]" 
+        : "bg-white/[0.03] border-white/5 hover:bg-white/[0.07] hover:border-white/10"
+      }`}
     >
       <div className="flex justify-between items-start mb-6 relative z-10">
-        <div className={`p-3 rounded-2xl border ${colorVariants[color]} group-hover:scale-110 transition-transform duration-500`}>
+        <div className={`p-3 rounded-2xl border ${colorVariants[color]} ${isPending ? 'animate-pulse' : ''}`}>
           {icon}
         </div>
-        <div className="p-1.5 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <ArrowUpRight size={14} className="text-gray-400" />
-        </div>
+        
+        {isPending ? (
+          <div className="flex items-center gap-1.5 text-[8px] font-black text-gray-400 bg-white/5 px-2 py-1 rounded-full border border-white/10 uppercase tracking-widest">
+            <span className="w-1 h-1 rounded-full bg-gray-500 animate-ping" />
+            Developing
+          </div>
+        ) : (
+          <div className="p-1.5 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+            <ArrowUpRight size={14} className="text-gray-400" />
+          </div>
+        )}
       </div>
       
       <div className="relative z-10">
-        <h3 className="text-4xl font-black text-white tracking-tighter mb-1">
+        <h3 className={`text-3xl font-black tracking-tighter mb-1 ${isPending ? 'text-gray-500 italic' : 'text-white'}`}>
           {value}
         </h3>
         <p className="text-gray-500 font-bold text-[10px] uppercase tracking-[0.2em]">
           {title}
         </p>
+        {isPending && (
+          <p className="mt-2 text-[9px] text-indigo-500/50 font-black uppercase tracking-[0.1em] animate-pulse">
+            {statusLabel}...
+          </p>
+        )}
       </div>
 
-      {/* Aesthetic radial gradient glow */}
-      <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 blur-[40px] rounded-full group-hover:bg-white/10 transition-colors" />
+      {/* Aesthetic radial gradient glow - Disabled for pending items */}
+      {!isPending && (
+        <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 blur-[40px] rounded-full group-hover:bg-white/10 transition-colors" />
+      )}
     </motion.div>
   );
 }
