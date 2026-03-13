@@ -2,6 +2,14 @@ import userModel from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import tokenBlacklistModel from "../models/blacklist.model.js";
+import SibApiV3Sdk from "sib-api-v3-sdk";
+
+const client = SibApiV3Sdk.ApiClient.instance;
+const apiKey = client.authentications["api-key"];
+
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
+const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 /* =========================
    Register User
@@ -35,20 +43,30 @@ async function registerUserController(req, res) {
       password: hashedPassword,
     });
 
-    const token = jwt.sign(
-      { id: user._id, username: user.username, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" },
-    );
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+    user.resetOTP = otp;
+    user.otpExpiry = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: "santraakash999@gmail.com",
+        name: "Nexus AI",
+      },
+      to: [{ email: user.email }],
+      subject: "Verify your Nexus account",
+      htmlContent: `
+    <h2>Email Verification</h2>
+    <p>Your verification code is:</p>
+    <h1>${otp}</h1>
+    <p>This code expires in 10 minutes.</p>
+  `,
     });
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: "Verification OTP sent to your email",
       user: {
         id: user._id,
         username: user.username,
@@ -83,6 +101,12 @@ async function loginUserController(req, res) {
     if (!user) {
       return res.status(400).json({
         message: "Invalid email or password",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Please verify your email first",
       });
     }
 
@@ -186,9 +210,135 @@ async function getMeController(req, res) {
   }
 }
 
+async function forgotPasswordController(req, res) {
+  try {
+    const { email } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    user.resetOTP = otp;
+    user.otpExpiry = Date.now() + 10 * 60 * 1000;
+
+    await user.save();
+
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: "santraakash999@gmail.com",
+        name: "Nexus AI",
+      },
+      to: [{ email }],
+      subject: "Password Reset OTP",
+      htmlContent: `
+        <h2>Password Reset</h2>
+        <p>Your OTP code is:</p>
+        <h1>${otp}</h1>
+        <p>This code expires in 10 minutes.</p>
+      `,
+    });
+
+    res.status(200).json({
+      message: "OTP sent to email",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
+async function verifyOtpController(req, res) {
+  try {
+    const { email, otp } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user || user.resetOTP !== otp) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    if (!user.otpExpiry || user.otpExpiry < Date.now()) {
+      return res.status(400).json({
+        message: "OTP expired",
+      });
+    }
+
+    user.isVerified = true;
+    user.resetOTP = null;
+    user.otpExpiry = null;
+
+    await user.save();
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: "santraakash999@gmail.com",
+        name: "Nexus AI",
+      },
+      to: [{ email: user.email }],
+      subject: "Welcome to Nexus 🚀",
+      htmlContent: `
+  <h1>Welcome to Nexus</h1>
+  <p>Your account has been verified successfully.</p>
+  `,
+    });
+
+    res.status(200).json({
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
+async function resetPasswordController(req, res) {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    if (!user || user.resetOTP !== otp) {
+      return res.status(400).json({
+        message: "Invalid request",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    user.resetOTP = null;
+    user.otpExpiry = null;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Password reset successful",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+}
+
 export default {
   registerUserController,
   loginUserController,
   logoutUserController,
   getMeController,
+  forgotPasswordController,
+  verifyOtpController,
+  resetPasswordController,
 };
