@@ -16,12 +16,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await handleRegister({ username, email, password });
-    navigate("/");
+
+    navigate("/verify-email", {
+      state: { email },
+    });
   };
 
   return (
     <div className="relative min-h-screen w-full bg-[#030014] selection:bg-pink-500/30 overflow-hidden flex items-center justify-center p-6">
-      
       {/* ATMOSPHERIC BACKGROUND */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-pink-600/10 rounded-full blur-[140px] animate-pulse" />
@@ -29,12 +31,11 @@ const Register = () => {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px]" />
       </div>
 
-      <motion.main 
+      <motion.main
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="relative z-10 w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
       >
-        
         {/* LEFT SIDE: BRANDING */}
         <div className="flex flex-col items-start space-y-6">
           <motion.div
@@ -44,16 +45,18 @@ const Register = () => {
           >
             <Zap size={40} className="text-white fill-white" />
           </motion.div>
-          
+
           <div className="space-y-2">
             <h1 className="text-6xl font-black tracking-tighter text-white leading-none">
-              Join <br /> 
+              Join <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-fuchsia-400">
                 Nexus
               </span>
             </h1>
             <p className="text-gray-400 text-lg font-light max-w-[280px] leading-relaxed">
-              Initialize your <span className="text-gray-200">neural credentials</span> and enter the protocol.
+              Initialize your{" "}
+              <span className="text-gray-200">neural credentials</span> and
+              enter the protocol.
             </p>
           </div>
         </div>
@@ -68,19 +71,42 @@ const Register = () => {
           <div className="absolute inset-0 rounded-[3.5rem] bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
 
           <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-            
             {/* INPUT GROUPS */}
             {[
-              { label: "Identity", icon: User, type: "text", placeholder: "Enter username", val: username, set: setUsername },
-              { label: "Neural Address", icon: Mail, type: "email", placeholder: "Enter email", val: email, set: setEmail },
-              { label: "Access Key", icon: Lock, type: "password", placeholder: "••••••••", val: password, set: setPassword }
+              {
+                label: "Identity",
+                icon: User,
+                type: "text",
+                placeholder: "Enter username",
+                val: username,
+                set: setUsername,
+              },
+              {
+                label: "Neural Address",
+                icon: Mail,
+                type: "email",
+                placeholder: "Enter email",
+                val: email,
+                set: setEmail,
+              },
+              {
+                label: "Access Key",
+                icon: Lock,
+                type: "password",
+                placeholder: "••••••••",
+                val: password,
+                set: setPassword,
+              },
             ].map((field, idx) => (
               <div key={idx} className="space-y-3">
                 <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500 ml-1">
                   {field.label}
                 </label>
                 <div className="relative group">
-                  <field.icon className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-pink-500 transition-colors" size={18} />
+                  <field.icon
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-pink-500 transition-colors"
+                    size={18}
+                  />
                   <input
                     required
                     type={field.type}
@@ -102,13 +128,16 @@ const Register = () => {
             >
               {/* Shine effect */}
               <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
-              
+
               {loading ? (
                 <Loader2 size={24} className="animate-spin" />
               ) : (
                 <>
                   <span className="tracking-widest">REGISTER</span>
-                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
                 </>
               )}
             </motion.button>
@@ -118,7 +147,10 @@ const Register = () => {
           <div className="mt-10 text-center">
             <p className="text-gray-500 text-sm font-medium">
               Already authenticated?{" "}
-              <Link to="/login" className="text-pink-500 hover:text-pink-400 transition ml-1 underline-offset-4 hover:underline">
+              <Link
+                to="/login"
+                className="text-pink-500 hover:text-pink-400 transition ml-1 underline-offset-4 hover:underline"
+              >
                 Login
               </Link>
             </p>
@@ -131,7 +163,6 @@ const Register = () => {
             </p>
           </div>
         </motion.div>
-
       </motion.main>
     </div>
   );
