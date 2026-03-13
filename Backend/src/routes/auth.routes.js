@@ -8,8 +8,9 @@ authRouter.post("/register", authController.registerUserController);
 authRouter.post("/login", authController.loginUserController);
 authRouter.post("/logout", authController.logoutUserController);
 authRouter.get("/get-me", authMiddleware, authController.getMeController);
-router.post("/forgot-password", authController.forgotPasswordController);
-router.post("/verify-otp", authController.verifyOtpController);
-router.post("/reset-password", authController.resetPasswordController);
+
+authRouter.post("/forgot-password", authController.forgotPasswordController);
+authRouter.post("/verify-otp", authController.verifyOtpController);
+authRouter.post("/reset-password", authController.resetPasswordController);
 
 export default authRouter;
