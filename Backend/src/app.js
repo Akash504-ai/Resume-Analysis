@@ -9,6 +9,7 @@ import settingsRoutes from "./routes/settings.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import resumeRoutes from "./routes/resume.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api", uploadRoutes); // stoping this for now
 app.use("/api", resumeRoutes);
+app.use("/api/admin", adminRoutes);
 
 export default app;
