@@ -43,57 +43,30 @@ async function registerUserController(req, res) {
       password: hashedPassword,
     });
 
-    try {
-      await emailApi.sendTransacEmail({
-        sender: {
-          email: "santraakash999@gmail.com",
-          name: "Nexus AI",
-        },
-        to: [{ email: user.email }],
-        subject: "Welcome to Nexus 🚀",
-        htmlContent: `
-    <h1>Welcome to Nexus</h1>
-    
-    <p>Initialize your neural credentials and enter the protocol.</p>
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    <p>Your AI-powered interview system is ready.</p>
+    user.resetOTP = otp;
+    user.otpExpiry = Date.now() + 10 * 60 * 1000;
 
-    <h3>What you can do now:</h3>
+    await user.save();
 
-    <ul>
-      <li>Upload your resume for <b>ML/NLP-based analysis</b></li>
-      <li>Get <b>Top 5 job recommendations</b> from the internet with apply links</li>
-      <li>Practice <b>technical and behavioral interview questions</b></li>
-      <li>Follow an <b>AI interview preparation roadmap</b></li>
-      <li>Join the <b>Nexus community</b> for peer support</li>
-      <li>Track progress with the <b>LeetCode-style planning system</b></li>
-    </ul>
-
-    <p>Start building your interview system today.</p>
-
-    <br/>
-
-    <p><b>Nexus AI Protocol</b></p>
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: "santraakash999@gmail.com",
+        name: "Nexus AI",
+      },
+      to: [{ email: user.email }],
+      subject: "Verify your Nexus account",
+      htmlContent: `
+    <h2>Email Verification</h2>
+    <p>Your verification code is:</p>
+    <h1>${otp}</h1>
+    <p>This code expires in 10 minutes.</p>
   `,
-      });
-    } catch (error) {
-      console.error("Welcome email failed:", err.message);
-    }
-
-    const token = jwt.sign(
-      { id: user._id, username: user.username, role: user.role },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" },
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
     });
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: "Verification OTP sent to your email",
       user: {
         id: user._id,
         username: user.username,
@@ -128,6 +101,12 @@ async function loginUserController(req, res) {
     if (!user) {
       return res.status(400).json({
         message: "Invalid email or password",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(403).json({
+        message: "Please verify your email first",
       });
     }
 
@@ -288,14 +267,32 @@ async function verifyOtpController(req, res) {
       });
     }
 
-    if (user.otpExpiry < Date.now()) {
+    if (!user.otpExpiry || user.otpExpiry < Date.now()) {
       return res.status(400).json({
         message: "OTP expired",
       });
     }
 
+    user.isVerified = true;
+    user.resetOTP = null;
+    user.otpExpiry = null;
+
+    await user.save();
+    await emailApi.sendTransacEmail({
+      sender: {
+        email: "santraakash999@gmail.com",
+        name: "Nexus AI",
+      },
+      to: [{ email: user.email }],
+      subject: "Welcome to Nexus 🚀",
+      htmlContent: `
+  <h1>Welcome to Nexus</h1>
+  <p>Your account has been verified successfully.</p>
+  `,
+    });
+
     res.status(200).json({
-      message: "OTP verified",
+      message: "Email verified successfully",
     });
   } catch (error) {
     res.status(500).json({
