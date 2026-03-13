@@ -1,26 +1,38 @@
-// import React from "react";
-
-// function AdminDashboard() {
-//   return (
-//     <div>
-//       <h1>Admin Dashboard</h1>
-//       <p>Platform analytics</p>
-//     </div>
-//   );
-// }
-
-// export default AdminDashboard;
-
 import React from "react";
 
 function AdminDashboard() {
 
   return (
-    <div style={{background:"red", height:"100vh"}}>
-      <h1>ADMIN PANEL</h1>
+    <div style={{padding:"40px"}}>
+
+      <h1>Admin Dashboard</h1>
+
+      <div style={{display:"flex", gap:"20px", marginTop:"30px"}}>
+
+        <div className="admin-card">
+          <h3>Total Users</h3>
+          <p>0</p>
+        </div>
+
+        <div className="admin-card">
+          <h3>Resumes Analyzed</h3>
+          <p>0</p>
+        </div>
+
+        <div className="admin-card">
+          <h3>Community Messages</h3>
+          <p>0</p>
+        </div>
+
+        <div className="admin-card">
+          <h3>Active Users</h3>
+          <p>0</p>
+        </div>
+
+      </div>
+
     </div>
   );
-
 }
 
 export default AdminDashboard;
