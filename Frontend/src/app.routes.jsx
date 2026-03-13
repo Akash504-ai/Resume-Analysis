@@ -44,6 +44,7 @@ import AdminDashboard from "./features/admin/pages/AdminDashboard";
 import ForgotPassword from "./features/auth/pages/ForgotPassword";
 import VerifyOtp from "./features/auth/pages/VerifyOtp";
 import ResetPassword from "./features/auth/pages/ResetPassword";
+import VerifyEmail from "./features/auth/pages/VerifyEmail";
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,10 @@ export const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPassword />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />,
   },
   {
     path: "/dashboard",
