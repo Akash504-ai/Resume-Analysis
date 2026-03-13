@@ -12,7 +12,7 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     try {
-      await axios.post("/api/auth/forgot-password", { email });
+      await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
 
       alert("OTP sent to your email");
       navigate("/verify-otp", { state: { email } });

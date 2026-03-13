@@ -43,6 +43,43 @@ async function registerUserController(req, res) {
       password: hashedPassword,
     });
 
+    try {
+      await emailApi.sendTransacEmail({
+        sender: {
+          email: "santraakash999@gmail.com",
+          name: "Nexus AI",
+        },
+        to: [{ email: user.email }],
+        subject: "Welcome to Nexus 🚀",
+        htmlContent: `
+    <h1>Welcome to Nexus</h1>
+    
+    <p>Initialize your neural credentials and enter the protocol.</p>
+
+    <p>Your AI-powered interview system is ready.</p>
+
+    <h3>What you can do now:</h3>
+
+    <ul>
+      <li>Upload your resume for <b>ML/NLP-based analysis</b></li>
+      <li>Get <b>Top 5 job recommendations</b> from the internet with apply links</li>
+      <li>Practice <b>technical and behavioral interview questions</b></li>
+      <li>Follow an <b>AI interview preparation roadmap</b></li>
+      <li>Join the <b>Nexus community</b> for peer support</li>
+      <li>Track progress with the <b>LeetCode-style planning system</b></li>
+    </ul>
+
+    <p>Start building your interview system today.</p>
+
+    <br/>
+
+    <p><b>Nexus AI Protocol</b></p>
+  `,
+      });
+    } catch (error) {
+      console.error("Welcome email failed:", err.message);
+    }
+
     const token = jwt.sign(
       { id: user._id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
@@ -215,8 +252,8 @@ async function forgotPasswordController(req, res) {
 
     await emailApi.sendTransacEmail({
       sender: {
-        email: "no-reply@yourapp.com",
-        name: "PASO Support",
+        email: "santraakash999@gmail.com",
+        name: "Nexus AI",
       },
       to: [{ email }],
       subject: "Password Reset OTP",

@@ -1,39 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { email, otp } = location.state;
+  const email = location.state?.email;
+  const otp = location.state?.otp;
+
+  // redirect if email/otp missing
+  useEffect(() => {
+    if (!email || !otp) {
+      navigate("/forgot-password");
+    }
+  }, [email, otp, navigate]);
 
   const handleReset = async (e) => {
     e.preventDefault();
 
+    if (!password) return;
+
     try {
-      await axios.post("/api/auth/reset-password", {
+      setLoading(true);
+
+      await axios.post("http://localhost:3000/api/auth/reset-password", {
         email,
         otp,
-        newPassword: password
+        newPassword: password,
       });
 
-      alert("Password updated");
+      alert("Password updated successfully");
       navigate("/login");
 
     } catch (err) {
-      alert(err.response?.data?.message || "Error");
+      alert(err?.response?.data?.message || "Failed to reset password");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-
-      <form onSubmit={handleReset} className="space-y-4">
-
-        <h2 className="text-2xl font-bold">Reset Password</h2>
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <form
+        onSubmit={handleReset}
+        className="space-y-6 bg-white p-8 rounded-xl w-[350px]"
+      >
+        <h2 className="text-2xl font-bold text-center">Reset Password</h2>
 
         <input
           type="password"
@@ -44,12 +60,14 @@ const ResetPassword = () => {
           className="border p-3 rounded w-full"
         />
 
-        <button className="bg-pink-600 text-white px-4 py-2 rounded">
-          Reset Password
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-pink-600 text-white px-4 py-3 rounded w-full"
+        >
+          {loading ? "Updating..." : "Reset Password"}
         </button>
-
       </form>
-
     </div>
   );
 };

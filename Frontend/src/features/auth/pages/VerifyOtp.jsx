@@ -1,33 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const email = location.state?.email;
 
+  // if user refreshes page and email is lost
+  useEffect(() => {
+    if (!email) {
+      navigate("/forgot-password");
+    }
+  }, [email, navigate]);
+
   const handleVerify = async (e) => {
     e.preventDefault();
 
+    if (!otp) return;
+
     try {
-      await axios.post("/api/auth/verify-otp", { email, otp });
+      setLoading(true);
+
+      await axios.post("http://localhost:3000/api/auth/verify-otp", {
+        email,
+        otp,
+      });
 
       navigate("/reset-password", { state: { email, otp } });
 
     } catch (err) {
-      alert(err.response?.data?.message || "Invalid OTP");
+      alert(err?.response?.data?.message || "Invalid or expired OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-
-      <form onSubmit={handleVerify} className="space-y-4">
-
-        <h2 className="text-2xl font-bold">Verify OTP</h2>
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <form
+        onSubmit={handleVerify}
+        className="space-y-6 bg-white p-8 rounded-xl w-[350px]"
+      >
+        <h2 className="text-2xl font-bold text-center">Verify OTP</h2>
 
         <input
           type="text"
@@ -38,12 +57,14 @@ const VerifyOtp = () => {
           className="border p-3 rounded w-full"
         />
 
-        <button className="bg-pink-600 text-white px-4 py-2 rounded">
-          Verify OTP
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-pink-600 text-white px-4 py-3 rounded w-full"
+        >
+          {loading ? "Verifying..." : "Verify OTP"}
         </button>
-
       </form>
-
     </div>
   );
 };
