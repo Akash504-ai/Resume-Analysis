@@ -1,5 +1,5 @@
 import userModel from "../models/user.model.js";
-// import reportModel from "../models/report.model.js";      // resume analyses
+import interviewReportModel from "../models/interviewReport.model.js";      // resume analyses
 import messageModel from "../models/message.model.js";    // community chat
 
 /* =========================
@@ -10,7 +10,7 @@ export const getAdminStats = async (req, res) => {
   try {
 
     const totalUsers = await userModel.countDocuments();
-    // const totalResumes = await reportModel.countDocuments();
+    const totalResumes = await interviewReportModel.countDocuments();
     const totalMessages = await messageModel.countDocuments();
 
     res.json({
