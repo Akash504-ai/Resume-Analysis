@@ -41,6 +41,9 @@ import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import AdminProtected from "./features/auth/components/AdminProtected";
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
+import ForgotPassword from "./features/auth/pages/ForgotPassword";
+import VerifyOtp from "./features/auth/pages/VerifyOtp";
+import ResetPassword from "./features/auth/pages/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +57,18 @@ export const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/verify-otp",
+    element: <VerifyOtp />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/dashboard",
