@@ -36,42 +36,91 @@ function AdminDashboard() {
   }, []);
 
   if (loading) {
-    return <h2 style={{padding:"40px"}}>Loading admin data...</h2>;
+    return (
+      <div style={{ padding: "40px" }}>
+        <h2>Loading admin data...</h2>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div style={{ padding: "40px", maxWidth: "1200px", margin: "auto" }}>
 
-      <h1>Admin Dashboard</h1>
+      {/* HEADER */}
 
-      <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
+      <h1 style={{ marginBottom: "30px" }}>
+        Admin Dashboard
+      </h1>
 
-        <div className="admin-card">
-          <h3>Total Users</h3>
-          <p>{stats.totalUsers}</p>
-        </div>
 
-        <div className="admin-card">
-          <h3>Resumes Analyzed</h3>
-          <p>{stats.totalResumes}</p>
-        </div>
+      {/* STATS CARDS */}
 
-        <div className="admin-card">
-          <h3>Community Messages</h3>
-          <p>{stats.totalMessages}</p>
-        </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "20px",
+          marginBottom: "50px"
+        }}
+      >
 
-        <div className="admin-card">
-          <h3>Active Users</h3>
-          <p>0</p>
-        </div>
+        <StatCard
+          title="Total Users"
+          value={stats.totalUsers}
+        />
+
+        <StatCard
+          title="Resumes Analyzed"
+          value={stats.totalResumes}
+        />
+
+        <StatCard
+          title="Community Messages"
+          value={stats.totalMessages}
+        />
+
+        <StatCard
+          title="Active Users"
+          value="0"
+        />
 
       </div>
+
+
+      {/* USER MANAGEMENT TABLE */}
 
       <UsersTable />
 
     </div>
   );
+}
+
+
+/* ---------------- STAT CARD COMPONENT ---------------- */
+
+function StatCard({ title, value }) {
+
+  return (
+    <div
+      style={{
+        padding: "25px",
+        borderRadius: "10px",
+        background: "#f5f5f5",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+      }}
+    >
+
+      <h4 style={{ marginBottom: "10px" }}>
+        {title}
+      </h4>
+
+      <h2>
+        {value}
+      </h2>
+
+    </div>
+  );
+
 }
 
 export default AdminDashboard;

@@ -18,3 +18,13 @@ export const deleteUser = async (id) => {
 
   return res.json();
 };
+
+export const toggleBanUser = async (id) => {
+
+  const res = await fetch(`http://localhost:3000/api/admin/users/ban/${id}`, {
+    method: "PATCH",
+    credentials: "include"
+  });
+
+  return res.json();
+};
