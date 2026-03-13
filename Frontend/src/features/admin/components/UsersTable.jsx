@@ -141,7 +141,7 @@ function UsersTable() {
                     <div className="flex items-center justify-end gap-2">
                       {user.role !== "admin" && (
                         <>
-                          <button
+                          {/* <button
                             onClick={() => handleBan(user._id)}
                             className={`p-2 rounded-lg border transition-all ${
                               user.isBanned 
@@ -151,10 +151,10 @@ function UsersTable() {
                             title={user.isBanned ? "Lift Restriction" : "Restrict User"}
                           >
                             {user.isBanned ? <UserCheck size={16} /> : <ShieldAlert size={16} />}
-                          </button>
+                          </button> */}
                           <button
                             onClick={() => handleDelete(user._id)}
-                            className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 transition-all"
+                            className="p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 transition-all mr-2"
                             title="Delete Record"
                           >
                             <Trash2 size={16} />
