@@ -22,6 +22,7 @@ import {
   History,
   ChevronRight,
   Activity,
+  ArrowLeft,
 } from "lucide-react";
 import { useAuth } from "../../auth/hooks/useAuth.js";
 
@@ -84,7 +85,7 @@ const Home = () => {
             />
           </div>
         </div>
-        <h2 className="text-2xl font-black text-white mt-12 tracking-[0.4em] uppercase text-center">
+        <h2 className="text-2xl font-black text-white mt-12 tracking-[0.4em] uppercase text-center px-4">
           Neural <span className="text-pink-500">Syncing</span>
         </h2>
         <div className="mt-4 flex gap-1">
@@ -110,7 +111,18 @@ const Home = () => {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150" />
       </div>
 
-      <header className="max-w-7xl mx-auto pt-24 pb-20 px-6">
+      <header className="max-w-7xl mx-auto pt-12 md:pt-24 pb-12 md:pb-20 px-6">
+        {/* BACK BUTTON */}
+        <motion.button
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          onClick={() => navigate("/dashboard")}
+          className="flex items-center gap-2 text-gray-500 hover:text-white mb-10 transition-colors group"
+        >
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">Exit to Dashboard</span>
+        </motion.button>
+
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -129,25 +141,25 @@ const Home = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <h1 className="text-7xl md:text-8xl font-black text-white leading-[0.85] tracking-tighter mb-4">
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.85] tracking-tighter mb-4">
             COMMAND <br />
             <span className="italic font-light text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-pink-500 to-indigo-500">
               CENTER.
             </span>
           </h1>
-          <p className="text-gray-500 max-w-xl text-sm font-medium tracking-tight">
+          <p className="text-gray-500 max-w-xl text-xs md:text-sm font-medium tracking-tight">
             Upload your professional matrix and target description. Our neural
             engine will decrypt the optimal strategy for success.
           </p>
         </motion.div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-10">
+      <main className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* INPUT PANEL */}
-        <div className="lg:col-span-8 space-y-10">
+        <div className="lg:col-span-8 space-y-10 order-2 lg:order-1">
           {/* 1. Job Description Card */}
-          <div className="group bg-white/[0.03] border border-white/5 rounded-[2.5rem] p-1 hover:border-white/10 transition-all duration-500 shadow-2xl">
-            <div className="bg-[#030014]/40 rounded-[2.3rem] p-8 backdrop-blur-3xl">
+          <div className="group bg-white/[0.03] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-1 hover:border-white/10 transition-all duration-500 shadow-2xl">
+            <div className="bg-[#030014]/40 rounded-[1.8rem] md:rounded-[2.3rem] p-5 md:p-8 backdrop-blur-3xl">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center border border-pink-500/20 text-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.1)]">
@@ -164,7 +176,7 @@ const Home = () => {
                 </div>
               </div>
               <textarea
-                className="w-full h-72 bg-black/40 border border-white/5 rounded-3xl p-8 text-sm text-gray-300 focus:border-pink-500/40 outline-none transition-all resize-none placeholder:text-gray-800 font-mono shadow-inner"
+                className="w-full h-48 md:h-72 bg-black/40 border border-white/5 rounded-2xl md:rounded-3xl p-5 md:p-8 text-sm text-gray-300 focus:border-pink-500/40 outline-none transition-all resize-none placeholder:text-gray-800 font-mono shadow-inner"
                 placeholder="PASTE JOB DESCRIPTION OR SPECIFICATIONS HERE..."
                 onChange={(e) => setJobDescription(e.target.value)}
               />
@@ -172,10 +184,10 @@ const Home = () => {
           </div>
 
           {/* 2. Upload & Profile Grid */}
-          <div className="grid md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
             <div
               onClick={() => resumeInputRef.current.click()}
-              className={`group relative min-h-[280px] bg-white/[0.03] border-2 border-dashed rounded-[2.5rem] p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-500 ${
+              className={`group relative min-h-[220px] md:min-h-[280px] bg-white/[0.03] border-2 border-dashed rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-500 ${
                 fileName
                   ? "border-emerald-500/40 bg-emerald-500/[0.05]"
                   : "border-white/5 hover:border-pink-500/40 hover:bg-white/[0.05]"
@@ -189,25 +201,25 @@ const Home = () => {
                 onChange={handleFileChange}
               />
               <div
-                className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:rotate-6 ${
+                className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-3xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:rotate-6 ${
                   fileName
                     ? "bg-emerald-500/20 text-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.2)]"
                     : "bg-white/5 text-gray-500 group-hover:text-pink-500 group-hover:bg-pink-500/10"
                 }`}
               >
-                {fileName ? <ShieldCheck size={40} /> : <Upload size={40} />}
+                {fileName ? <ShieldCheck size={32} /> : <Upload size={32} />}
               </div>
               <div className="text-center">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-white">
+                <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-white break-all px-4">
                   {fileName ? fileName : "Inject Resume"}
                 </p>
                 <p className="text-[9px] text-gray-500 mt-2 font-bold uppercase tracking-widest opacity-60">
-                  PDF / DOCX Format Supported
+                  PDF / DOCX Supported
                 </p>
               </div>
             </div>
 
-            <div className="bg-white/[0.03] border border-white/5 rounded-[2.5rem] p-8 hover:bg-white/[0.05] transition-all duration-500">
+            <div className="bg-white/[0.03] border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 hover:bg-white/[0.05] transition-all duration-500">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-500">
                   <User size={20} />
@@ -222,33 +234,33 @@ const Home = () => {
                 </div>
               </div>
               <textarea
-                className="w-full h-40 bg-black/40 border border-white/5 rounded-3xl p-6 text-xs text-gray-400 outline-none focus:border-indigo-500/40 resize-none transition-all"
-                placeholder="Briefly describe your unique professional edge or current career goals..."
+                className="w-full h-32 md:h-40 bg-black/40 border border-white/5 rounded-2xl md:rounded-3xl p-6 text-xs text-gray-400 outline-none focus:border-indigo-500/40 resize-none transition-all"
+                placeholder="Briefly describe your unique professional edge..."
                 onChange={(e) => setSelfDescription(e.target.value)}
               />
             </div>
           </div>
 
           {/* Action Hub */}
-          <div className="flex flex-col md:flex-row items-center justify-between p-10 bg-gradient-to-r from-white/[0.04] to-transparent border border-white/10 rounded-[3rem] gap-8 shadow-2xl">
-            <div className="flex flex-col gap-2">
+          <div className="flex flex-col md:flex-row items-center justify-between p-6 md:p-10 bg-gradient-to-r from-white/[0.04] to-transparent border border-white/10 rounded-[2rem] md:rounded-[3rem] gap-8 shadow-2xl">
+            <div className="flex flex-col gap-2 w-full md:w-auto text-center md:text-left">
               <h4 className="text-white font-black uppercase tracking-widest text-xs">
                 Execute Protocol
               </h4>
               {!user?.grokApiKey && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                <div className="flex items-center justify-center md:justify-start gap-2 px-3 py-1.5 bg-amber-500/5 border border-amber-500/20 rounded-xl">
                   <Lock size={10} className="text-amber-500" />
                   <span className="text-[8px] font-black uppercase tracking-widest text-amber-500/80">
-                    API Authorization Required for Full Mode
+                    API Authorization Required
                   </span>
                 </div>
               )}
             </div>
 
-            <div className="flex gap-3 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <button
                 onClick={handleFreeAnalysis}
-                className="flex-1 md:flex-none px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl font-bold text-xs uppercase tracking-widest transition-all active:scale-95 text-gray-300 hover:text-white"
+                className="w-full md:w-auto px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 rounded-xl font-bold text-xs uppercase tracking-widest transition-all active:scale-95 text-gray-300 hover:text-white"
               >
                 Scan Matrix
               </button>
@@ -256,7 +268,7 @@ const Home = () => {
               <button
                 onClick={handleFullStrategy}
                 disabled={!user?.grokApiKey}
-                className={`flex-1 md:flex-none px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-95 ${
+                className={`w-full md:w-auto px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 transition-all duration-300 active:scale-95 ${
                   user?.grokApiKey
                     ? "bg-white text-black hover:bg-pink-600 hover:text-white shadow-[0_0_20px_rgba(219,39,119,0.3)]"
                     : "bg-white/5 text-gray-600 cursor-not-allowed border border-white/5"
@@ -273,7 +285,7 @@ const Home = () => {
         </div>
 
         {/* RECENT LOGS SIDEBAR */}
-        <aside className="lg:col-span-4 space-y-8">
+        <aside className="lg:col-span-4 space-y-8 order-1 lg:order-2">
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-3">
               <History size={16} className="text-pink-500" />
@@ -284,7 +296,7 @@ const Home = () => {
             <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent ml-4" />
           </div>
 
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
             <AnimatePresence>
               {reports.slice(0, 6).map((report, i) => (
                 <motion.div
@@ -299,7 +311,7 @@ const Home = () => {
                   <div className="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 blur-3xl -z-10 group-hover:bg-pink-500/10 transition-colors" />
 
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-xs font-black text-gray-200 group-hover:text-pink-400 transition-colors truncate max-w-[180px] uppercase tracking-tighter">
+                    <p className="text-xs font-black text-gray-200 group-hover:text-pink-400 transition-colors truncate max-w-[150px] uppercase tracking-tighter">
                       {report.title || "Standard Scan"}
                     </p>
                     <div className="flex items-center gap-1">
@@ -328,7 +340,7 @@ const Home = () => {
             </AnimatePresence>
 
             {reports.length === 0 && (
-              <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-[3rem] bg-white/[0.01]">
+              <div className="col-span-full py-16 text-center border-2 border-dashed border-white/5 rounded-[2.5rem] bg-white/[0.01]">
                 <FileText
                   size={40}
                   className="mx-auto text-gray-900 mb-4 opacity-20"
