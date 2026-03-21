@@ -65,7 +65,7 @@ export default function Sidebar() {
 
         <MobileItem icon={<LayoutDashboard size={20} />} active={path === "/dashboard"} onClick={() => navigate("/dashboard")} />
         <MobileItem icon={<FileText size={20} />} active={path === "/plans"} onClick={() => navigate("/plans")} />
-        
+        {/* <MobileItem icon={<FileText size={20} />} active={path === "/plans"} onClick={() => navigate("/plans")} /> */}
         {/* Center Button */}
         <button
           onClick={() => navigate("/app")}
@@ -73,9 +73,9 @@ export default function Sidebar() {
         >
           <Plus size={22} className="text-white" />
         </button>
-
         <MobileItem icon={<MessageCircle size={20} />} active={path === "/community"} onClick={() => navigate("/community")} />
         <MobileItem icon={<User size={20} />} active={path === "/profile"} onClick={() => navigate("/profile")} />
+        {/* <MobileItem icon={<FileText size={20} />} active={path === "/plans"} onClick={() => navigate("/plans")} /> */}
       </div>
     </>
   );
