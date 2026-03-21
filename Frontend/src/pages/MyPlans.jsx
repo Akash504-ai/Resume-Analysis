@@ -24,42 +24,43 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { format, subDays, isSameDay, startOfToday } from "date-fns";
 import { useAuth } from "../features/auth/hooks/useAuth";
+import Sidebar from "../layouts/sidebar";
 // import Settings from "./Settings";
 
 /* --- SYNCED SIDEBAR ITEM COMPONENT --- */
-const SidebarItem = ({
-  icon,
-  label,
-  active = false,
-  highlight = false,
-  onClick,
-}) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${
-        active
-          ? "bg-white/10 text-white shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]"
-          : "text-gray-500 hover:text-white hover:bg-white/5"
-      } ${highlight ? "text-pink-500" : ""}`}
-    >
-      {/* {active && (
-        <motion.div 
-          layoutId="activeIndicator"
-          className="absolute left-0 w-1 h-6 bg-pink-500 rounded-r-full shadow-[0_0_15px_rgba(236,72,153,0.8)]"
-        />
-      )} */}
-      <span
-        className={`${active ? "text-pink-500" : "group-hover:scale-110 transition-transform"}`}
-      >
-        {icon}
-      </span>
-      <span className="hidden md:block text-sm font-bold tracking-tight">
-        {label}
-      </span>
-    </button>
-  );
-};
+// const SidebarItem = ({
+//   icon,
+//   label,
+//   active = false,
+//   highlight = false,
+//   onClick,
+// }) => {
+//   return (
+//     <button
+//       onClick={onClick}
+//       className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group relative ${
+//         active
+//           ? "bg-white/10 text-white shadow-[inset_0_0_10px_rgba(255,255,255,0.05)]"
+//           : "text-gray-500 hover:text-white hover:bg-white/5"
+//       } ${highlight ? "text-pink-500" : ""}`}
+//     >
+//       {/* {active && (
+//         <motion.div 
+//           layoutId="activeIndicator"
+//           className="absolute left-0 w-1 h-6 bg-pink-500 rounded-r-full shadow-[0_0_15px_rgba(236,72,153,0.8)]"
+//         />
+//       )} */}
+//       <span
+//         className={`${active ? "text-pink-500" : "group-hover:scale-110 transition-transform"}`}
+//       >
+//         {icon}
+//       </span>
+//       <span className="hidden md:block text-sm font-bold tracking-tight">
+//         {label}
+//       </span>
+//     </button>
+//   );
+// };
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -210,7 +211,7 @@ export default function MyPlans() {
   return (
     <div className="flex min-h-screen bg-[#02000d] text-slate-200 selection:bg-pink-500/30 font-sans">
       {/* --- SIDEBAR NAVIGATION (SYNCED) --- */}
-      <aside className="fixed left-0 top-0 h-screen w-20 md:w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex flex-col items-center md:items-stretch py-8 px-4">
+      {/* <aside className="fixed left-0 top-0 h-screen w-20 md:w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex flex-col items-center md:items-stretch py-8 px-4">
         <div
           onClick={() => navigate("/")}
           className="flex items-center gap-3 px-2 mb-12 cursor-pointer"
@@ -271,10 +272,12 @@ export default function MyPlans() {
           />
           <span className="hidden md:block font-bold text-sm">Log out</span>
         </button>
-      </aside>
+      </aside> */}
+
+      <Sidebar />
 
       {/* --- MAIN CONTENT AREA (SYNCED MARGIN) --- */}
-      <main className="flex-1 ml-20 md:ml-64 p-4 md:p-12 lg:p-16 relative overflow-x-hidden">
+      <main className="flex-1 md:ml-64 p-4 md:p-12 lg:p-16 pb-20 md:pb-12 relative overflow-x-hidden">
         {/* Background Effects */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full" />
