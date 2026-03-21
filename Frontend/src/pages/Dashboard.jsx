@@ -128,7 +128,7 @@ export default function Dashboard() {
         <Sidebar />
 
       {/* --- MAIN CONTENT AREA --- */}
-      <main className="flex-1 md:ml-64 p-4 md:p-12 lg:p-16">
+      <main className="flex-1 md:ml-64 p-4 md:p-12 lg:p-16 pb-20 md:pb-12">
         {/* Background Effects */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full" />
