@@ -82,7 +82,7 @@ export default function OpenSource() {
         {/* CTA Section */}
         <div className="flex flex-col items-center gap-6">
           <a
-            href="https://github.com/your-repo"
+            href="https://github.com/Akash504-ai/Resume-Analysis.git"
             target="_blank"
             rel="noopener noreferrer"
             className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-black font-bold text-lg hover:bg-zinc-200 transition-all active:scale-95"
