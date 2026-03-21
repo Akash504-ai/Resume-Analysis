@@ -23,7 +23,6 @@ export default function Sidebar() {
     <>
       {/* ================= DESKTOP SIDEBAR ================= */}
       <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex-col py-8 px-4">
-        
         {/* Logo */}
         <div
           onClick={() => navigate("/")}
@@ -40,15 +39,46 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-2 w-full">
-          <SidebarItem icon={<LayoutDashboard size={20} />} label="Overview" active={path === "/dashboard"} onClick={() => navigate("/dashboard")} />
-          <SidebarItem icon={<FileText size={20} />} label="My Plans" active={path === "/plans"} onClick={() => navigate("/plans")} />
-          <SidebarItem icon={<MessageCircle size={20} />} label="Community" active={path === "/community"} onClick={() => navigate("/community")} />
-          <SidebarItem icon={<Plus size={20} />} label="New Strategy" highlight active={path === "/app"} onClick={() => navigate("/app")} />
-          <SidebarItem icon={<Settings size={20} />} label="Settings" active={path === "/settings"} onClick={() => navigate("/settings")} />
+          <SidebarItem
+            icon={<LayoutDashboard size={20} />}
+            label="Overview"
+            active={path === "/dashboard"}
+            onClick={() => navigate("/dashboard")}
+          />
+          <SidebarItem
+            icon={<FileText size={20} />}
+            label="My Plans"
+            active={path === "/plans"}
+            onClick={() => navigate("/plans")}
+          />
+          <SidebarItem
+            icon={<MessageCircle size={20} />}
+            label="Community"
+            active={path === "/community"}
+            onClick={() => navigate("/community")}
+          />
+          <SidebarItem
+            icon={<Plus size={20} />}
+            label="New Strategy"
+            highlight
+            active={path === "/app"}
+            onClick={() => navigate("/app")}
+          />
+          <SidebarItem
+            icon={<Settings size={20} />}
+            label="Settings"
+            active={path === "/settings"}
+            onClick={() => navigate("/settings")}
+          />
         </nav>
 
         {/* Profile */}
-        <SidebarItem icon={<User size={20} />} label="Profile" active={path === "/profile"} onClick={() => navigate("/profile")} />
+        <SidebarItem
+          icon={<User size={20} />}
+          label="Profile"
+          active={path === "/profile"}
+          onClick={() => navigate("/profile")}
+        />
 
         {/* Logout */}
         <button
@@ -62,10 +92,21 @@ export default function Sidebar() {
 
       {/* ================= MOBILE BOTTOM NAV ================= */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-[#030014]/80 backdrop-blur-xl border-t border-white/10 z-50 flex justify-around py-2">
-
-        <MobileItem icon={<LayoutDashboard size={20} />} active={path === "/dashboard"} onClick={() => navigate("/dashboard")} />
-        <MobileItem icon={<FileText size={20} />} active={path === "/plans"} onClick={() => navigate("/plans")} />
-        {/* <MobileItem icon={<FileText size={20} />} active={path === "/plans"} onClick={() => navigate("/plans")} /> */}
+        <MobileItem
+          icon={<LayoutDashboard size={20} />}
+          active={path === "/dashboard"}
+          onClick={() => navigate("/dashboard")}
+        />
+        <MobileItem
+          icon={<FileText size={20} />}
+          active={path === "/plans"}
+          onClick={() => navigate("/plans")}
+        />
+        <MobileItem
+          icon={<Settings size={20} />}
+          active={path === "/settings"}
+          onClick={() => navigate("/settings")}
+        />
         {/* Center Button */}
         <button
           onClick={() => navigate("/app")}
@@ -73,8 +114,17 @@ export default function Sidebar() {
         >
           <Plus size={22} className="text-white" />
         </button>
-        <MobileItem icon={<MessageCircle size={20} />} active={path === "/community"} onClick={() => navigate("/community")} />
-        <MobileItem icon={<User size={20} />} active={path === "/profile"} onClick={() => navigate("/profile")} />
+        <MobileItem
+          icon={<MessageCircle size={20} />}
+          active={path === "/community"}
+          onClick={() => navigate("/community")}
+        />
+        <MobileItem
+          icon={<User size={20} />}
+          active={path === "/profile"}
+          onClick={() => navigate("/profile")}
+        />
+        <MobileItem icon={<LogOut size={20} />} onClick={handleLogout} />
         {/* <MobileItem icon={<FileText size={20} />} active={path === "/plans"} onClick={() => navigate("/plans")} /> */}
       </div>
     </>
