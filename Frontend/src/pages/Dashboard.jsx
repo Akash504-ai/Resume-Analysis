@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { useInterview } from "../features/interview/hooks/useInterview";
 import { useAuth } from "../features/auth/hooks/useAuth";
+import Sidebar from "../layouts/sidebar";
 // import Settings from "./Settings";
 
 export default function Dashboard() {
@@ -62,7 +63,7 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-[#02000d] text-slate-200 selection:bg-pink-500/30 font-sans">
       {/* --- SIDEBAR NAVIGATION --- */}
-      <aside className="fixed left-0 top-0 h-screen w-20 md:w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex flex-col items-center md:items-stretch py-8 px-4">
+      {/* <aside className="fixed left-0 top-0 h-screen w-20 md:w-64 border-r border-white/5 bg-[#030014]/50 backdrop-blur-2xl z-50 flex flex-col items-center md:items-stretch py-8 px-4">
         <div
           onClick={() => navigate("/")}
           className="flex items-center gap-3 px-2 mb-12 cursor-pointer"
@@ -122,10 +123,12 @@ export default function Dashboard() {
           />
           <span className="hidden md:block font-bold text-sm">Log out</span>
         </button>
-      </aside>
+      </aside> */}
+
+        <Sidebar />
 
       {/* --- MAIN CONTENT AREA --- */}
-      <main className="flex-1 ml-[190px] p-4 md:p-12 lg:p-16">
+      <main className="flex-1 md:ml-64 p-4 md:p-12 lg:p-16">
         {/* Background Effects */}
         <div className="fixed inset-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[-10%] right-[10%] w-[600px] h-[600px] bg-indigo-600/10 blur-[150px] rounded-full" />
