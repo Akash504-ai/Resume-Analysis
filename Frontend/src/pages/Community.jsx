@@ -315,7 +315,7 @@ const Community = () => {
         <div className="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-pink-600/10 blur-[150px] rounded-full" />
       </div>
 
-      <main className="flex-1 ml-20 md:ml-64 flex flex-col h-screen relative z-10">
+      <main className="flex-1 md:ml-64 flex flex-col h-screen pb-20 md:pb-0 relative z-10">
         <header className="px-8 py-6 border-b border-white/5 bg-[#030014]/50 backdrop-blur-xl flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-600 to-indigo-600 flex items-center justify-center shadow-[0_0_20px_rgba(219,39,119,0.3)]">

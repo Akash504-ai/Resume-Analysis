@@ -5,14 +5,14 @@ import { saveGrokApiKey } from "../services/settingsApi";
 import Sidebar from "../layouts/sidebar.jsx";
 import { useAuth } from "../features/auth/hooks/useAuth.js";
 import { motion } from "framer-motion";
-import { 
-  Key, 
-  ExternalLink, 
-  CheckCircle2, 
-  Cpu, 
-  ShieldCheck, 
+import {
+  Key,
+  ExternalLink,
+  CheckCircle2,
+  Cpu,
+  ShieldCheck,
   Zap,
-  ArrowRight
+  ArrowRight,
 } from "lucide-react";
 
 const Settings = () => {
@@ -75,8 +75,8 @@ const Settings = () => {
 
       <Sidebar />
 
-      <main className="flex-1 ml-[80px] md:ml-[260px] p-6 md:p-12 relative z-10 overflow-y-auto">
-        <motion.div 
+      <main className="flex-1 md:ml-64 p-6 md:p-12 pb-20 md:pb-12 relative z-10 overflow-y-auto">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto"
@@ -92,29 +92,36 @@ const Settings = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-            
             {/* API KEY CARD (Left side - Span 3) */}
             <div className="lg:col-span-3 space-y-6">
               <div className="bg-white/[0.03] border border-white/10 rounded-[2rem] p-8 backdrop-blur-xl relative overflow-hidden group">
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-pink-500/40 to-transparent" />
-                
+
                 <div className="flex items-center gap-4 mb-6">
                   <div className="p-3 bg-pink-500/10 rounded-xl border border-pink-500/20 text-pink-500">
                     <Cpu size={24} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-white">Neural Integration</h2>
-                    <p className="text-sm text-gray-500">Configure Groq AI core</p>
+                    <h2 className="text-xl font-bold text-white">
+                      Neural Integration
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      Configure Groq AI core
+                    </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <p className="text-gray-400 text-sm leading-relaxed">
-                    Unlock advanced interview analysis and roadmap generation by bridging your Groq API key.
+                    Unlock advanced interview analysis and roadmap generation by
+                    bridging your Groq API key.
                   </p>
 
                   <div className="relative group/input">
-                    <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within/input:text-pink-500 transition-colors" size={18} />
+                    <Key
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within/input:text-pink-500 transition-colors"
+                      size={18}
+                    />
                     <input
                       type="password"
                       placeholder="gsk_xxxxxxxxxxxxxxxxxxxx"
@@ -140,8 +147,8 @@ const Settings = () => {
                   </button>
 
                   {message && (
-                    <motion.p 
-                      initial={{ opacity: 0 }} 
+                    <motion.p
+                      initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       className={`text-center text-xs font-bold uppercase tracking-widest ${message.includes("success") ? "text-emerald-400" : "text-pink-400"}`}
                     >
@@ -168,12 +175,18 @@ const Settings = () => {
                       <div className="relative z-10 w-9 h-9 rounded-full bg-[#030014] border border-white/10 flex items-center justify-center text-pink-500 group-hover:border-pink-500/50 group-hover:shadow-[0_0_15px_rgba(219,39,119,0.2)] transition-all">
                         {step.icon}
                       </div>
-                      
+
                       <div className="flex-1 pt-1">
                         <h4 className="text-sm font-bold text-white group-hover:text-pink-400 transition-colors">
                           {step.link ? (
-                            <a href={step.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:underline">
-                              {step.title} <ExternalLink size={12} className="opacity-50" />
+                            <a
+                              href={step.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 hover:underline"
+                            >
+                              {step.title}{" "}
+                              <ExternalLink size={12} className="opacity-50" />
                             </a>
                           ) : (
                             step.title
@@ -188,7 +201,6 @@ const Settings = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </motion.div>
       </main>

@@ -190,7 +190,7 @@ const Profile = () => {
         <div className="absolute bottom-[5%] left-[10%] w-[400px] h-[400px] bg-pink-600/10 blur-[120px] rounded-full" />
       </div>
 
-      <main className="flex-1 ml-20 md:ml-64 p-6 md:p-12 lg:p-16 relative z-10">
+      <main className="flex-1 md:ml-64 p-6 md:p-12 lg:p-16 pb-20 md:pb-12 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* --- HEADER --- */}
           <header className="flex flex-col md:flex-row items-center md:items-end justify-between gap-8 mb-16">
