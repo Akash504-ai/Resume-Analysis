@@ -15,11 +15,13 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await handleRegister({ username, email, password });
+    const success = await handleRegister({ username, email, password });
 
-    navigate("/verify-email", {
-      state: { email },
-    });
+    if (success) {
+      navigate("/verify-email", {
+        state: { email },
+      });
+    }
   };
 
   return (

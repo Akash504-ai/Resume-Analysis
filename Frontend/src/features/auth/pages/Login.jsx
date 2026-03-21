@@ -13,10 +13,14 @@ const Login = () => {
   const { loading, handleLogin } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    await handleLogin({ email, password });
-    navigate("/dashboard"); // Or wherever your protected route is
-  };
+  e.preventDefault();
+
+  const success = await handleLogin({ email, password });
+
+  if (success) {
+    navigate("/dashboard");
+  }
+};
 
   return (
     <div className="relative min-h-screen w-full bg-[#030014] selection:bg-indigo-500/30 overflow-hidden flex items-center justify-center p-6">

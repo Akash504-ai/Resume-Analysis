@@ -1,11 +1,35 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, useInView, useMotionValue, useSpring } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useSpring,
+  AnimatePresence,
+} from "framer-motion";
 import { AnimatedTooltip } from "../../components/ui/animated-tooltip";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import { WorldMap } from "../../components/ui/world-map";
+import { Menu, X, ArrowRight } from "lucide-react";
+
+import Features from "../../components/HeroComponents/Features";
+import HowItWorks from "../../components/HeroComponents/HowItWorks";
+import Testimonials from "../../components/HeroComponents/Testimonials";
+import FAQ from "../../components/HeroComponents/FAQ";
+import OpenSource from "../../components/HeroComponents/OpenSource";
+import ContributionWorkflow from "../../components/HeroComponents/ContributionWorkflow";
+import FinalCTA from "../../components/HeroComponents/FinalCTA";
+import Footer from "../../components/HeroComponents/Footer";
+
+const navLinks = [
+  { name: "Features", href: "#features" },
+  { name: "How It Works", href: "#how-it-works" },
+  { name: "Testimonials", href: "#testimonials" },
+  { name: "FAQ", href: "#faq" },
+  { name: "Open Source", href: "#open-source" },
+];
 
 const people = [
   {
@@ -52,7 +76,6 @@ const people = [
   },
 ];
 
-// Moving Counter outside to prevent re-declaration errors
 const Counter = ({ value }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -87,8 +110,8 @@ const Counter = ({ value }) => {
 export default function Landing() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // FIX: Defining the missing stats array
   const stats = [
     { val: "99.2%", label: "ML Precision", color: "from-pink-500" },
     { val: "10k+", label: "Plans Built", color: "from-purple-500" },
@@ -134,29 +157,114 @@ export default function Landing() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
       </div>
 
-      {/* NAVIGATION */}
-      <nav className="relative z-50 w-full flex justify-between items-center px-6 py-8 max-w-7xl">
-        <div
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 cursor-pointer group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-600 to-indigo-600 flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-            <span className="text-white font-black text-xl">N</span>
+      {/* NAVIGATION OVERHAUL */}
+      <nav className="fixed top-4 z-[100] w-full px-4 flex justify-center pointer-events-none">
+        <div className="max-w-5xl w-full relative pointer-events-auto">
+          {/* Floating Glass Container */}
+          <div className="absolute inset-0 bg-[#030014]/70 backdrop-blur-2xl rounded-2xl md:rounded-[2rem] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] ring-1 ring-white/5" />
+
+          <div className="relative flex items-center justify-between px-4 py-2 md:px-6 md:py-2.5">
+            {/* Logo Section */}
+            <div
+              onClick={() => navigate("/")}
+              className="flex items-center gap-3 cursor-pointer group shrink-0"
+            >
+              <div className="relative w-9 h-9 md:w-11 md:h-11 rounded-xl bg-gradient-to-tr from-pink-600 to-indigo-600 flex items-center justify-center shadow-lg group-hover:rotate-[10deg] transition-all duration-300">
+                {/* Subtle logo glow */}
+                <div className="absolute inset-0 rounded-xl bg-inherit blur-md opacity-40 group-hover:opacity-100 transition-opacity" />
+                <span className="relative text-white font-black text-xl md:text-2xl italic tracking-tighter">
+                  N
+                </span>
+              </div>
+              <span className="text-white font-extrabold text-xl tracking-tight hidden sm:block">
+                Nexus<span className="text-pink-500">.</span>
+              </span>
+            </div>
+
+            {/* Desktop Links - Floating Pill Design */}
+            <div className="hidden lg:flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-1.5 py-1.5">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="px-5 py-2 text-sm font-semibold text-zinc-400 hover:text-white rounded-full hover:bg-white/10 transition-all duration-300"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate("/login")}
+                className="hidden md:block text-sm font-bold text-zinc-400 hover:text-white transition-colors px-4 py-2"
+              >
+                Sign In
+              </button>
+
+              <button
+                onClick={handleStartAnalysis}
+                className="relative px-5 py-2.5 rounded-xl md:rounded-2xl bg-white text-black text-sm font-black hover:bg-zinc-200 hover:-translate-y-0.5 transition-all active:scale-95 shadow-xl group overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  <span className="hidden sm:inline">Start Analysis</span>
+                  <span className="sm:hidden">Start</span>
+                  <ArrowRight
+                    size={16}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </span>
+              </button>
+
+              {/* Mobile Toggle */}
+              <button
+                className="md:hidden text-white p-2.5 hover:bg-white/10 rounded-xl transition-colors"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
-          <span className="text-white font-bold text-2xl tracking-tight">
-            Nexus<span className="text-pink-500">.</span>
-          </span>
+
+          {/* Mobile Dropdown - Adjusted for Floating Style */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                className="absolute top-[calc(100%+12px)] left-0 right-0 md:hidden z-[110]"
+              >
+                <div className="bg-[#030014]/95 backdrop-blur-3xl border border-white/10 rounded-3xl p-5 shadow-[0_30px_60px_rgba(0,0,0,0.6)]">
+                  <div className="flex flex-col gap-2">
+                    {navLinks.map((link, idx) => (
+                      <motion.a
+                        key={link.name}
+                        href={link.href}
+                        className="px-5 py-4 text-lg font-medium text-zinc-300 hover:text-white hover:bg-white/5 rounded-2xl transition-colors"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.name}
+                      </motion.a>
+                    ))}
+                    <div className="h-px bg-white/10 my-3" />
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="w-full py-4 text-center text-white font-bold bg-white/5 rounded-2xl border border-white/10"
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-        <button
-          onClick={() => navigate("/login")}
-          className="px-5 py-2 text-sm font-semibold text-gray-300 hover:text-white border border-gray-800 hover:border-gray-600 rounded-full transition-all bg-white/5 backdrop-blur-sm"
-        >
-          Sign In
-        </button>
       </nav>
 
       {/* MAIN CONTENT */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-10 pb-20 text-center max-w-5xl">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-10 pb-20 text-center max-w-5xl mt-30">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -203,21 +311,16 @@ export default function Landing() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16"
           >
-            {/* START ANALYSIS BUTTON */}
             <motion.button
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.97 }}
               onClick={handleStartAnalysis}
               className="group relative w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-fuchsia-600 to-indigo-600 text-white font-bold text-lg overflow-hidden shadow-[0_0_40px_rgba(219,39,119,0.35)] transition-all duration-300"
             >
-              {/* glow background */}
               <span className="absolute inset-0 bg-gradient-to-r from-pink-500 to-indigo-500 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></span>
-
-              {/* animated shine */}
               <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <span className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-25deg] animate-[shine_1.2s_ease]" />
               </span>
-
               <span className="relative z-10 flex items-center gap-2 font-semibold tracking-wide">
                 Start Analysis
                 <motion.span
@@ -230,16 +333,13 @@ export default function Landing() {
               </span>
             </motion.button>
 
-            {/* SIGN IN BUTTON */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate("/login")}
               className="group relative w-full sm:w-auto px-10 py-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md text-white font-bold text-lg overflow-hidden transition-all duration-300 hover:border-pink-500/40 hover:bg-white/10"
             >
-              {/* subtle glow */}
               <span className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/20 to-indigo-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg"></span>
-
               <span className="relative z-10 tracking-tight">Sign In</span>
             </motion.button>
           </motion.div>
@@ -262,6 +362,16 @@ export default function Landing() {
             </p>
           </motion.div>
 
+          <section id="features">
+            <Features />
+          </section>
+          <section id="how-it-works">
+            <HowItWorks />
+          </section>
+          <section id="testimonials">
+            <Testimonials />
+          </section>
+
           {/* World Map Section */}
           <section className="w-full py-24 flex flex-col items-center justify-center relative">
             <motion.div
@@ -279,70 +389,50 @@ export default function Landing() {
               </p>
             </motion.div>
 
-            {/* The Map now spans width and melts into background */}
             <div className="w-full max-w-7xl px-4">
               <WorldMap
                 lineColor="#ec4899"
                 dots={[
-                  // North America → Europe
                   {
                     start: { lat: 40.7128, lng: -74.006 },
                     end: { lat: 51.5074, lng: -0.1278 },
-                  }, // NYC → London
-
-                  // North America → Asia
+                  },
                   {
                     start: { lat: 37.7749, lng: -122.4194 },
                     end: { lat: 35.6762, lng: 139.6503 },
-                  }, // SF → Tokyo
-
-                  // Europe → India
+                  },
                   {
                     start: { lat: 48.8566, lng: 2.3522 },
                     end: { lat: 28.6139, lng: 77.209 },
-                  }, // Paris → Delhi
-
-                  // India → Australia
+                  },
                   {
                     start: { lat: 19.076, lng: 72.8777 },
                     end: { lat: -33.8688, lng: 151.2093 },
-                  }, // Mumbai → Sydney
-
-                  // Europe → Africa
+                  },
                   {
                     start: { lat: 52.52, lng: 13.405 },
                     end: { lat: -1.2921, lng: 36.8219 },
-                  }, // Berlin → Nairobi
-
-                  // South America → Europe
+                  },
                   {
                     start: { lat: -23.5505, lng: -46.6333 },
                     end: { lat: 41.9028, lng: 12.4964 },
-                  }, // São Paulo → Rome
-
-                  // Africa → Asia
+                  },
                   {
                     start: { lat: 30.0444, lng: 31.2357 },
                     end: { lat: 1.3521, lng: 103.8198 },
-                  }, // Cairo → Singapore
-
-                  // Australia → USA
+                  },
                   {
                     start: { lat: -33.8688, lng: 151.2093 },
                     end: { lat: 34.0522, lng: -118.2437 },
-                  }, // Sydney → LA
-
-                  // Japan → Canada
+                  },
                   {
                     start: { lat: 35.6762, lng: 139.6503 },
                     end: { lat: 49.2827, lng: -123.1207 },
-                  }, // Tokyo → Vancouver
-
-                  // Middle East → Europe
+                  },
                   {
                     start: { lat: 25.2048, lng: 55.2708 },
                     end: { lat: 40.4168, lng: -3.7038 },
-                  }, // Dubai → Madrid
+                  },
                 ]}
               />
             </div>
@@ -384,8 +474,19 @@ export default function Landing() {
               ))}
             </div>
           </motion.div>
+
+          <section id="faq">
+            <FAQ />
+          </section>
+          <section id="open-source">
+            <OpenSource />
+          </section>
+
+          <ContributionWorkflow />
+          <FinalCTA />
         </motion.div>
       </main>
+      <Footer />
 
       <style>{`
         @keyframes gradient-flow {
@@ -396,6 +497,10 @@ export default function Landing() {
         .animate-gradient-flow {
           background-size: 200% 200%;
           animation: gradient-flow 4s ease infinite;
+        }
+        @keyframes shine {
+          from { left: -100%; }
+          to { left: 100%; }
         }
       `}</style>
     </div>

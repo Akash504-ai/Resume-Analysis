@@ -15,6 +15,7 @@ export const useAuth = () => {
 
     try {
       const data = await login({ email, password });
+
       console.log("LOGIN USER:", data.user);
       setUser(data.user);
 
@@ -23,8 +24,11 @@ export const useAuth = () => {
       } else {
         navigate("/dashboard");
       }
+
+      return true; // ✅ ADD THIS
     } catch (err) {
       console.log(err);
+      return false; // ✅ ADD THIS
     } finally {
       setLoading(false);
     }
@@ -40,13 +44,10 @@ export const useAuth = () => {
 
       setUser(data.user);
 
-      if (data.user.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
+      return true; // ✅ ADD THIS
     } catch (err) {
       console.log(err);
+      return false; // ✅ ADD THIS
     } finally {
       setLoading(false);
     }
