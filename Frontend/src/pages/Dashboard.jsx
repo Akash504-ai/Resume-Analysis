@@ -125,7 +125,7 @@ export default function Dashboard() {
         </button>
       </aside> */}
 
-        <Sidebar />
+      <Sidebar />
 
       {/* --- MAIN CONTENT AREA --- */}
       <main className="flex-1 md:ml-64 p-4 md:p-12 lg:p-16 pb-20 md:pb-12">
@@ -155,13 +155,22 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="flex bg-white/5 border border-white/10 rounded-2xl p-1.5 backdrop-blur-md">
+            <div className="flex bg-white/5 border border-white/10 rounded-2xl p-1.5 backdrop-blur-md gap-2">
               <button
                 onClick={() => navigate("/app")}
                 className="px-6 py-3 bg-white text-black font-bold rounded-xl hover:bg-pink-500 hover:text-white transition-all flex items-center gap-2"
               >
                 <Plus size={18} strokeWidth={3} />
                 Create Plan
+              </button>
+
+              {/* Mobile only */}
+              <button
+                onClick={() => navigate("/")}
+                className="md:hidden px-13 py-3 bg-white/5 border border-white/10 text-gray-300 font-bold rounded-xl hover:bg-white/10 hover:text-white transition-all flex items-center gap-2"
+              >
+                <ArrowLeft size={16} />
+                Home
               </button>
             </div>
           </header>
