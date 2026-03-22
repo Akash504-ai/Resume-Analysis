@@ -1,9 +1,12 @@
-# ML models
-ml_services/*.pkl
-
-# Python cache
-__pycache__/
-*.pyc
-
+# ML models (ignore all by default)
 *.pkl
+
+# Allow only required small files
+!ml_services/tfidf_vectorizer copy.pkl
+!ml_services/spam_vectorizer.pkl
+!ml_services/tfidf_matrix.pkl
+!ml_services/tfidf_vectorizer.pkl
+!ml_services/skill_list.pkl
+
+# Explicitly ignore large dataset
 ml_services/job_dataset.pkl
