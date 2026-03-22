@@ -416,11 +416,16 @@ const Community = () => {
                 >
                   <Zap size={48} className="text-pink-500 mx-auto mb-6" />
                   <h2 className="text-3xl font-black text-white mb-4 tracking-tight">
-                    Access Community
+                    Community Guidelines
                   </h2>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                    Establish a secure node connection to the Nexus network.
-                  </p>
+
+                  <ul className="text-sm text-gray-400 text-left space-y-3 mb-8">
+                    <li>🚫 No spam or flooding messages</li>
+                    <li>⚠️ Toxic or abusive language is not allowed</li>
+                    <li>🤝 Be respectful to all members</li>
+                    <li>📸 Share only appropriate content</li>
+                    <li>💬 Follow community etiquette</li>
+                  </ul>
                   <button
                     onClick={handleJoin}
                     className="w-full py-4 bg-white text-black font-black rounded-2xl hover:bg-pink-500 hover:text-white transition-all duration-300 uppercase tracking-widest text-sm"

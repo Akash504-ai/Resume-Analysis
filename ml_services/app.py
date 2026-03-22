@@ -12,6 +12,17 @@ from pydantic import BaseModel
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+# --------------------------------------------------
+# Download Models (NEW)
+# --------------------------------------------------
+
+def download_file(url, filename):
+    if not os.path.exists(filename):
+        print(f"Downloading {filename}...")
+        response = requests.get(url)
+        with open(filename, "wb") as f:
+            f.write(response.content)
+
 
 # --------------------------------------------------
 # FastAPI Configuration
