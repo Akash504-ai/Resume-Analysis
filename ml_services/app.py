@@ -61,6 +61,13 @@ class Message(BaseModel):
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# 🔽 Download missing large files
+download_file("https://drive.google.com/uc?export=download&id=1HqUWzy2wmvqW1hRTVnxN8rhOm6VTTHAq", "job_dataset.pkl")
+
+download_file("https://drive.google.com/uc?export=download&id=1QWjJWUYlZ0elJXD8GoXwj49TOLpR-uV2", "toxic_model.pkl")
+
+download_file("https://drive.google.com/uc?export=download&id=1KnFnDYEF7Txm7G4VSJ9llc4y1EwzcQVY", "spam_model.pkl")
+
 def load_pickle(file_name):
     path = os.path.join(BASE_DIR, file_name)
     with open(path, "rb") as f:
