@@ -3,12 +3,12 @@ import tokenBlacklistModel from "../models/blacklist.model.js";
 
 async function authUser(req, res, next) {
   try {
-
-    const token = req.cookies.token;
+    // 🔥 get token from BOTH cookie + header
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({
-        message: "Authentication token not provided"
+        message: "Authentication token not provided",
       });
     }
 
@@ -16,7 +16,7 @@ async function authUser(req, res, next) {
 
     if (isTokenBlacklisted) {
       return res.status(401).json({
-        message: "Token is blacklisted. Please login again."
+        message: "Token is blacklisted. Please login again.",
       });
     }
 
@@ -25,13 +25,10 @@ async function authUser(req, res, next) {
     req.user = decoded;
 
     next();
-
   } catch (err) {
-
     return res.status(401).json({
-      message: "Invalid or expired token"
+      message: "Invalid or expired token",
     });
-
   }
 }
 
