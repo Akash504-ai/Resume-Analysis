@@ -71,7 +71,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/profile/me", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile/me`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -125,13 +125,13 @@ const Profile = () => {
     if (!file) return;
     const formData = new FormData();
     formData.append("profileImage", file);
-    const res = await fetch("http://localhost:3000/api/profile/upload-image", {
+    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile/upload-image`, {
       method: "POST",
       credentials: "include",
       body: formData,
     });
     const data = await res.json();
-    setProfile(data);
+    setProfile(data.profile || data);
   };
 
   const updateProfile = async () => {
@@ -155,7 +155,7 @@ const Profile = () => {
           codechef: form.codechef,
         },
       };
-      const res = await fetch("http://localhost:3000/api/profile/update", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/profile/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -322,7 +322,7 @@ const Profile = () => {
                           className="flex-1 bg-black/40 border border-white/10 p-4 rounded-[1.2rem] text-sm outline-none focus:border-pink-500/50"
                           value={customSkill}
                           onChange={(e) => setCustomSkill(e.target.value)}
-                          onKeyPress={(e) => e.key === 'Enter' && addCustomSkill()}
+                          onKeyDown={(e) => e.key === 'Enter' && addCustomSkill()}
                         />
                         <button 
                           onClick={addCustomSkill}
