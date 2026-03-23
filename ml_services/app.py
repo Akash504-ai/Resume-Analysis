@@ -83,6 +83,11 @@ download_file(
     "spam_model.pkl"
 )
 
+download_file(
+    "https://huggingface.co/Akashsantra/resume-analyzer-models/resolve/main/tfidf_vectorizer%20copy.pkl",
+    "tfidf_vectorizer copy.pkl"
+)
+
 def load_pickle(file_name):
     path = os.path.join(BASE_DIR, file_name)
     with open(path, "rb") as f:
@@ -94,11 +99,11 @@ try:
     df = load_pickle("job_dataset.pkl")
     skill_list = load_pickle("skill_list.pkl")
 
-    toxic_model = joblib.load("toxic_model.pkl")
-    toxic_vectorizer = joblib.load("tfidf_vectorizer copy.pkl")
+    toxic_model = joblib.load(os.path.join(BASE_DIR, "toxic_model.pkl"))
+    toxic_vectorizer = joblib.load(os.path.join(BASE_DIR, "tfidf_vectorizer copy.pkl"))
 
-    spam_model = joblib.load("spam_model.pkl")
-    spam_vectorizer = joblib.load("spam_vectorizer.pkl")
+    spam_model = joblib.load(os.path.join(BASE_DIR, "spam_model.pkl"))
+    spam_vectorizer = joblib.load(os.path.join(BASE_DIR, "spam_vectorizer.pkl"))
 
 except Exception as e:
     raise RuntimeError(f"Error loading ML models: {e}")
