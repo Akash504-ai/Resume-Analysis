@@ -1,8 +1,7 @@
 import messageModel from "../models/message.model.js";
 import axios from "axios";
 
-const ML_API = "http://127.0.0.1:8000/moderate";
-
+const ML_API = `${process.env.ML_SERVICE_URL}/moderate`;
 const onlineUsers = new Map();
 
 const setupChatSocket = (io) => {
@@ -46,19 +45,29 @@ const setupChatSocket = (io) => {
           data;
 
         /* Call ML moderation API */
-        const moderation = await axios.post("http://127.0.0.1:8000/moderate", {
-          text: message,
-        });
+        let spam_score = 0;
+        let toxic_score = 0;
 
-        const { spam_score, toxic_score } = moderation.data;
+        try {
+          const moderation = await axios.post(
+            ML_API,
+            { text: message },
+            { timeout: 60000 }, // prevents timeout crash (Render cold start)
+          );
+
+          spam_score = moderation.data.spam_score;
+          toxic_score = moderation.data.toxic_score;
+        } catch (err) {
+          console.error("ML service failed:", err.message);
+        }
 
         console.log("Spam score:", spam_score);
         console.log("Toxic score:", toxic_score);
 
         let moderationLabel = null;
 
-        if (spam_score > 0.3) moderationLabel = "spam";
         if (toxic_score > 0.6) moderationLabel = "toxic";
+        else if (spam_score > 0.3) moderationLabel = "spam";
 
         const newMessage = await messageModel.create({
           user: userId,
