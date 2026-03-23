@@ -45,7 +45,7 @@ const VerifyOtp = () => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:3000/api/auth/verify-otp", {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/verify-otp`, {
         email,
         otp: finalOtp,
       });
