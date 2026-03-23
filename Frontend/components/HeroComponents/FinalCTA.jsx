@@ -50,7 +50,7 @@ export default function FinalCTA() {
             </button>
             
             <button
-              onClick={() => navigate("/features")}
+              onClick={() => navigate("/register")}
               className="group flex items-center gap-2 px-10 py-5 rounded-2xl bg-transparent text-white font-bold text-xl border border-white/10 hover:bg-white/5 hover:border-white/20 transition-all duration-300"
             >
               Explore Features
