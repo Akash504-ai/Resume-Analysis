@@ -104,11 +104,11 @@ async function loginUserController(req, res) {
       });
     }
 
-    if (!user.isVerified) {
-      return res.status(403).json({
-        message: "Please verify your email first",
-      });
-    }
+    // if (!user.isVerified) {
+    //   return res.status(403).json({
+    //     message: "Please verify your email first",
+    //   });
+    // }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -126,9 +126,8 @@ async function loginUserController(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false, // 🔥 force false for localhost
-      secure: false,
-      sameSite: "lax",
+      secure: true, // ✅ IMPORTANT
+      sameSite: "none", // ✅ IMPORTANT
       path: "/",
     });
 
