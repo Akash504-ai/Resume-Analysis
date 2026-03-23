@@ -85,22 +85,27 @@ export const useAuth = () => {
   /* ---------------- INITIAL AUTH CHECK ---------------- */
 
   useEffect(() => {
+    if (user !== undefined) return; 
+
     const getAndSetUser = async () => {
       try {
         const data = await getMe();
 
         if (data) {
           setUser(data.user);
+        } else {
+          setUser(null);
         }
       } catch (err) {
         console.log(err);
+        setUser(null);
       } finally {
-        setLoading(false); // ✅ ALWAYS stop loading
+        setLoading(false);
       }
     };
 
     getAndSetUser();
-  }, []); // ❗ no user dependency (important)
+  }, [user]);
 
   return {
     user,
