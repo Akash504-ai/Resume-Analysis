@@ -3,7 +3,7 @@ import pickle
 import re
 import requests
 import joblib
-import gdown
+# import gdown
 from typing import List
 
 from fastapi import FastAPI, HTTPException
