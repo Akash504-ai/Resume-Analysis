@@ -16,7 +16,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:3000/api/auth/forgot-password", { email });
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/forgot-password`, { email });
       // Using a custom delay to let the animation breathe
       navigate("/verify-otp", { state: { email } });
     } catch (err) {
