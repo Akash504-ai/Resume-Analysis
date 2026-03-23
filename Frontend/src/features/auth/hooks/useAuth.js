@@ -5,7 +5,6 @@ import { login, register, logout, getMe } from "../services/auth.api";
 
 export const useAuth = () => {
   const { user, setUser, loading, setLoading } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   /* ---------------- LOGIN ---------------- */
@@ -16,7 +15,6 @@ export const useAuth = () => {
     try {
       const data = await login({ email, password });
 
-      console.log("LOGIN USER:", data.user);
       setUser(data.user);
 
       if (data.user.role === "admin") {
@@ -25,10 +23,10 @@ export const useAuth = () => {
         navigate("/dashboard");
       }
 
-      return true; // ✅ ADD THIS
+      return true;
     } catch (err) {
       console.log(err);
-      return false; // ✅ ADD THIS
+      return false;
     } finally {
       setLoading(false);
     }
@@ -40,14 +38,13 @@ export const useAuth = () => {
     setLoading(true);
 
     try {
-      const data = await register({ username, email, password });
+      // ✅ DO NOT set user here (VERY IMPORTANT)
+      await register({ username, email, password });
 
-      setUser(data.user);
-
-      return true; // ✅ ADD THIS
+      return true;
     } catch (err) {
       console.log(err);
-      return false; // ✅ ADD THIS
+      return false;
     } finally {
       setLoading(false);
     }
@@ -88,22 +85,22 @@ export const useAuth = () => {
   /* ---------------- INITIAL AUTH CHECK ---------------- */
 
   useEffect(() => {
-    if (user !== null) return;
-
     const getAndSetUser = async () => {
       try {
         const data = await getMe();
 
-        if (data) setUser(data.user);
+        if (data) {
+          setUser(data.user);
+        }
       } catch (err) {
         console.log(err);
       } finally {
-        setLoading(false);
+        setLoading(false); // ✅ ALWAYS stop loading
       }
     };
 
     getAndSetUser();
-  }, []);
+  }, []); // ❗ no user dependency (important)
 
   return {
     user,
