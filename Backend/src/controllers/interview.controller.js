@@ -55,11 +55,12 @@ async function generateInterViewReportController(req, res) {
         career_paths: [],
         skillGaps: [],
         live_jobs: [],
-        job_match_score: 25,
+        job_match_score: 0,
+        failed: true,
       };
     }
 
-    const matchScore = resumeAnalysis?.job_match_score || 25;
+    const matchScore = resumeAnalysis?.job_match_score ?? 0;
 
     /* ---------------- FREE MODE ---------------- */
 
