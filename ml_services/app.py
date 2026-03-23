@@ -3,7 +3,6 @@ import pickle
 import re
 import requests
 import joblib
-# import gdown
 from typing import List
 
 from fastapi import FastAPI, HTTPException
@@ -17,10 +16,18 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # Download Models (NEW)
 # --------------------------------------------------
 
-# def download_file(url, filename):
-#     if not os.path.exists(filename):
-#         print(f"Downloading {filename}...")
-#         gdown.download(url, filename, quiet=False)
+def download_file(url, filename):
+    file_path = os.path.join(BASE_DIR, filename)
+
+    if not os.path.exists(file_path):
+        print(f"Downloading {filename}...")
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            with open(file_path, "wb") as f:
+                f.write(response.content)
+        else:
+            raise Exception(f"Failed to download {filename}")
 
 
 # --------------------------------------------------
