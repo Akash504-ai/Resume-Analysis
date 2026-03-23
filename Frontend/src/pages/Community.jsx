@@ -28,7 +28,7 @@ import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { motion, AnimatePresence } from "framer-motion";
 
-const socket = io("http://localhost:3000", {
+const socket = io(import.meta.env.VITE_BACKEND_URL, {
   withCredentials: true,
   autoConnect: false,
 });
@@ -235,10 +235,13 @@ const Community = () => {
         // Replace with your actual upload API endpoint
         // const res = await uploadAPI(formData);
         // imageUrl = res.url;
-        const res = await fetch("http://localhost:3000/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
 
         const data = await res.json();
         imageUrl = data.url;
