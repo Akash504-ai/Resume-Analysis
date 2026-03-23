@@ -3,6 +3,31 @@ import { z } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 import puppeteer from "puppeteer";
 
+/* ---------------- SAFE JSON PARSER ---------------- */
+
+function extractJSON(text) {
+  try {
+    let cleaned = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+
+    if (start === -1 || end === -1) {
+      throw new Error("No JSON found");
+    }
+
+    const jsonString = cleaned.slice(start, end + 1);
+
+    return JSON.parse(jsonString);
+  } catch (err) {
+    console.error("❌ AI RAW RESPONSE:\n", text);
+    throw new Error("Invalid JSON returned by AI");
+  }
+}
+
 /* ---------------- SCHEMA ---------------- */
 
 const interviewReportSchema = z.object({
@@ -77,50 +102,49 @@ Job Description:
 ${jobDescription}
 `;
 
-  const response = await ai.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.5,
-  });
-
-  const text = response.choices[0].message.content;
-
-  /* ---------- SAFE JSON EXTRACTION ---------- */
-
-  const match = text.match(/\{[\s\S]*\}/);
-
-  if (!match) {
-    throw new Error("AI did not return valid JSON");
-  }
-
-  let parsed;
-
   try {
-    parsed = JSON.parse(match[0]);
-  } catch (err) {
-    console.error("JSON parse error:", err);
-    throw new Error("Invalid JSON returned by AI");
-  }
+    const response = await ai.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.5,
+    });
 
-  /* ---------- VALIDATE WITH ZOD ---------- */
+    const text = response.choices[0].message.content;
 
-  const validated = interviewReportSchema.safeParse(parsed);
+    const parsed = extractJSON(text);
 
-  if (!validated.success) {
-    console.error("Schema validation error:", validated.error);
+    const validated = interviewReportSchema.safeParse(parsed);
 
+    if (!validated.success) {
+      console.error("⚠️ Schema validation error:", validated.error);
+
+      // SAFE FALLBACK (never crash)
+      return {
+        matchScore: parsed.matchScore ?? 0,
+        title: parsed.title ?? "Interview Report",
+
+        technicalQuestions: parsed.technicalQuestions ?? [],
+        behavioralQuestions: parsed.behavioralQuestions ?? [],
+        skillGaps: parsed.skillGaps ?? [],
+        preparationPlan: parsed.preparationPlan ?? [],
+      };
+    }
+
+    return validated.data;
+  } catch (error) {
+    console.error("❌ AI GENERATION FAILED:", error.message);
+
+    // 🔥 FINAL FALLBACK (no 500 error ever)
     return {
-      matchScore: parsed.matchScore ?? 0,
-      title: parsed.title ?? "",
+      matchScore: 0,
+      title: "Interview Report",
 
-      technicalQuestions: parsed.technicalQuestions ?? [],
-      behavioralQuestions: parsed.behavioralQuestions ?? [],
-      skillGaps: parsed.skillGaps ?? [],
-      preparationPlan: parsed.preparationPlan ?? [],
+      technicalQuestions: [],
+      behavioralQuestions: [],
+      skillGaps: [],
+      preparationPlan: [],
     };
   }
-
-  return validated.data;
 }
 
 /* ---------------- PDF GENERATION ---------------- */
@@ -190,35 +214,30 @@ ${selfDescription}
 
 Job Description:
 ${jobDescription}
-
-The resume should fit 1–2 pages when converted to PDF.
 `;
 
-  const response = await ai.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.5,
-  });
+  try {
+    const response = await ai.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.5,
+    });
 
-  const text = response.choices[0].message.content;
+    const text = response.choices[0].message.content;
 
-  const match = text.match(/\{[\s\S]*\}/);
+    const jsonContent = extractJSON(text);
 
-  if (!match) {
-    throw new Error("AI did not return valid JSON");
+    const validated = resumePdfSchema.safeParse(jsonContent);
+
+    if (!validated.success) {
+      throw new Error("Invalid resume JSON format");
+    }
+
+    return await generatePdfFromHtml(validated.data.html);
+  } catch (error) {
+    console.error("❌ RESUME PDF FAILED:", error.message);
+    throw new Error("Resume generation failed");
   }
-
-  const jsonContent = JSON.parse(match[0]);
-
-  const validated = resumePdfSchema.safeParse(jsonContent);
-
-  if (!validated.success) {
-    throw new Error("Invalid resume JSON format");
-  }
-
-  const pdfBuffer = await generatePdfFromHtml(validated.data.html);
-
-  return pdfBuffer;
 }
 
 export { generateInterviewReport, generateResumePdf };
