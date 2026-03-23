@@ -62,17 +62,17 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # 🔽 Download missing large files
 download_file(
-    "https://drive.google.com/uc?id=1HqUWzy2wmvqW1hRTVnxN8rhOm6VTTHAq",
+    "https://huggingface.co/Akashsantra/resume-analyzer-models/resolve/main/job_dataset.pkl",
     "job_dataset.pkl"
 )
 
 download_file(
-    "https://drive.google.com/uc?id=1QWjJWUYlZ0elJXD8GoXwj49TOLpR-uV2",
+    "https://huggingface.co/Akashsantra/resume-analyzer-models/resolve/main/toxic_model.pkl",
     "toxic_model.pkl"
 )
 
 download_file(
-    "https://drive.google.com/uc?id=1KnFnDYEF7Txm7G4VSJ9llc4y1EwzcQVY",
+    "https://huggingface.co/Akashsantra/resume-analyzer-models/resolve/main/spam_model.pkl",
     "spam_model.pkl"
 )
 
