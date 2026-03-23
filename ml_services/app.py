@@ -88,6 +88,11 @@ download_file(
     "tfidf_vectorizer copy.pkl"
 )
 
+download_file(
+    "https://huggingface.co/Akashsantra/resume-analyzer-models/resolve/main/spam_vectorizer.pkl",
+    "spam_vectorizer.pkl"
+)
+
 def load_pickle(file_name):
     path = os.path.join(BASE_DIR, file_name)
     with open(path, "rb") as f:
