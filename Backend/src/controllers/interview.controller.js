@@ -48,9 +48,15 @@ async function generateInterViewReportController(req, res) {
     } catch (error) {
       console.error("Resume ML Service Error:", error);
 
-      return res.status(500).json({
-        message: "Resume analysis service unavailable.",
-      });
+      // fallback instead of crash
+      resumeAnalysis = {
+        resume_skills: [],
+        recommended_jobs: [],
+        career_paths: [],
+        skillGaps: [],
+        live_jobs: [],
+        job_match_score: 25,
+      };
     }
 
     const matchScore = resumeAnalysis?.job_match_score || 25;
@@ -61,9 +67,6 @@ async function generateInterViewReportController(req, res) {
       const title =
         jobDescription?.split("\n")[0]?.slice(0, 60) ||
         "Resume Analysis Report";
-
-      // const matchScore =
-      //   resumeAnalysis?.recommended_jobs?.[0]?.match_score || 25;
 
       const interviewReport = await interviewReportModel.create({
         user: req.user.id,
@@ -80,7 +83,6 @@ async function generateInterViewReportController(req, res) {
 
         skillGaps: resumeAnalysis.skillGaps || [],
         live_jobs: resumeAnalysis.live_jobs || resumeAnalysis.liveJobs || [],
-
         matchScore,
       });
 
