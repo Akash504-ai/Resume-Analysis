@@ -15,10 +15,16 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    origin: "http://localhost:5173",
-    credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://resume-analysis-git-main-akash-santra-s-projects.vercel.app",
+      "https://resume-analysis-7uk688aa4-akash-santra-s-projects.vercel.app"
+    ],
+    credentials: true,
+  })
+);
 
 /* using all the routes here */
 app.use("/api/auth", authRouter);
