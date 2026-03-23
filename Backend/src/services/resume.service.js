@@ -18,10 +18,6 @@ export const analyzeResume = async (resumeText, jobDescription) => {
 
     const mlData = response.data;
 
-    // -----------------------------------------
-    // DATA FROM ML SERVICE
-    // -----------------------------------------
-
     const detectedSkills = mlData?.resume_analysis?.detected_skills || [];
 
     const careerPaths = mlData?.career_paths || [];
@@ -29,10 +25,6 @@ export const analyzeResume = async (resumeText, jobDescription) => {
     const recommendedJobs = mlData?.job_recommendations || [];
 
     const jobMatchScore = mlData?.job_match_score || 0;
-
-    // -----------------------------------------
-    // COLLECT ALL MISSING SKILLS
-    // -----------------------------------------
 
     const missingSkillsSet = new Set();
 
@@ -46,10 +38,6 @@ export const analyzeResume = async (resumeText, jobDescription) => {
       skill: skill,
       severity: "medium",
     }));
-
-    // -----------------------------------------
-    // FINAL DATA RETURNED TO CONTROLLER
-    // -----------------------------------------
 
     return {
       job_match_score: jobMatchScore,
