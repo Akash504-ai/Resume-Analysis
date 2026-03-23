@@ -58,10 +58,87 @@ async function registerUserController(req, res) {
       to: [{ email: user.email }],
       subject: "Verify your Nexus account",
       htmlContent: `
-    <h2>Email Verification</h2>
-    <p>Your verification code is:</p>
-    <h1>${otp}</h1>
-    <p>This code expires in 10 minutes.</p>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        .container {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          max-width: 500px;
+          margin: 0 auto;
+          padding: 40px 20px;
+          background-color: #f9f9f9;
+        }
+        .card {
+          background-color: #ffffff;
+          padding: 40px;
+          border-radius: 16px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+          text-align: center;
+        }
+        .logo {
+          font-size: 24px;
+          font-weight: 800;
+          color: #6366f1; /* Nexus Indigo */
+          margin-bottom: 30px;
+          letter-spacing: -1px;
+        }
+        h2 {
+          color: #1f2937;
+          font-size: 22px;
+          margin-bottom: 10px;
+        }
+        p {
+          color: #6b7280;
+          line-height: 1.6;
+          margin-bottom: 25px;
+        }
+        .otp-container {
+          background: #f3f4f6;
+          border-radius: 12px;
+          padding: 20px;
+          margin: 25px 0;
+          border: 1px dashed #d1d5db;
+        }
+        .otp-code {
+          font-size: 36px;
+          font-weight: 800;
+          color: #4f46e5;
+          letter-spacing: 8px;
+          margin: 0;
+        }
+        .footer {
+          margin-top: 25px;
+          font-size: 12px;
+          color: #9ca3af;
+        }
+        .timer {
+          font-weight: 600;
+          color: #ef4444;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <div class="logo">NEXUS AI</div>
+          <h2>Verify your email</h2>
+          <p>To complete your registration, please use the following one-time password (OTP):</p>
+          
+          <div class="otp-container">
+            <h1 class="otp-code">${otp}</h1>
+          </div>
+
+          <p>This code will expire in <span class="timer">10 minutes</span>.</p>
+          <p>If you didn't request this, you can safely ignore this email.</p>
+          
+          <div class="footer">
+            &copy; 2026 Nexus AI. All rights reserved.
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
   `,
     });
 
