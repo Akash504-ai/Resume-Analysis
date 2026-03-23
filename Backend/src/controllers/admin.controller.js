@@ -1,10 +1,8 @@
 import userModel from "../models/user.model.js";
-import interviewReportModel from "../models/interviewReport.model.js";      // resume analyses
-import messageModel from "../models/message.model.js";    // community chat
+import interviewReportModel from "../models/interviewReport.model.js";      
+import messageModel from "../models/message.model.js";    
 
-/* =========================
-   Get Platform Stats
-========================= */
+// Get Platform Stats
 
 export const getAdminStats = async (req, res) => {
   try {
@@ -28,9 +26,7 @@ export const getAdminStats = async (req, res) => {
 };
 
 
-/* =========================
-   Get All Users
-========================= */
+// Get All Users
 
 export const getAllUsers = async (req, res) => {
   try {
@@ -53,9 +49,7 @@ export const getAllUsers = async (req, res) => {
 };
 
 
-/* =========================
-   Delete User
-========================= */
+// Delete User
 
 export const deleteUser = async (req, res) => {
   try {
