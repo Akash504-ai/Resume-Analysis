@@ -13,14 +13,14 @@ import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://resume-analysis-git-main-akash-santra-s-projects.vercel.app",
-      "https://resume-analysis-7uk688aa4-akash-santra-s-projects.vercel.app"
+      "https://resume-analysis-git-main-akash-santra-s-projects.vercel.app"
     ],
     credentials: true,
   })

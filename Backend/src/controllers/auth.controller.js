@@ -125,11 +125,12 @@ async function loginUserController(req, res) {
     );
 
     res.cookie("token", token, {
-  httpOnly: true,
-  secure: false,          // 🔥 force false for localhost
-  sameSite: "lax",
-  path: "/", 
-});
+      httpOnly: true,
+      secure: false, // 🔥 force false for localhost
+      secure: false,
+      sameSite: "lax",
+      path: "/",
+    });
 
     res.status(200).json({
       message: "User logged in successfully",
@@ -163,7 +164,8 @@ async function logoutUserController(req, res) {
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "None",
+      secure: true,
     });
 
     res.status(200).json({
