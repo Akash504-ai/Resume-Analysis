@@ -3,7 +3,7 @@ import tokenBlacklistModel from "../models/blacklist.model.js";
 
 async function authUser(req, res, next) {
   try {
-    // 🔥 get token from BOTH cookie + header
+    // get token from BOTH cookie + header
     const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
     if (!token) {

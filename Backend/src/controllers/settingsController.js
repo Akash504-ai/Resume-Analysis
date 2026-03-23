@@ -27,7 +27,7 @@ export const saveGrokApiKey = async (req, res) => {
       });
     }
 
-    // 🔐 encrypt before saving
+    // encrypt before saving
     const encryptedKey = encrypt(apiKey);
 
     user.grokApiKey = encryptedKey;

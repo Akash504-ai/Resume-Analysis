@@ -76,7 +76,7 @@ const setupChatSocket = (io) => {
           type: type || "text",
           imageUrl: imageUrl || null,
           mentions: mentions || [],
-          moderation: moderationLabel, // 🔥 NEW FIELD
+          moderation: moderationLabel, 
           replyTo: replyTo
             ? {
                 _id: replyTo._id,
