@@ -17,10 +17,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 # Download Models (NEW)
 # --------------------------------------------------
 
-def download_file(url, filename):
-    if not os.path.exists(filename):
-        print(f"Downloading {filename}...")
-        gdown.download(url, filename, quiet=False)
+# def download_file(url, filename):
+#     if not os.path.exists(filename):
+#         print(f"Downloading {filename}...")
+#         gdown.download(url, filename, quiet=False)
 
 
 # --------------------------------------------------
