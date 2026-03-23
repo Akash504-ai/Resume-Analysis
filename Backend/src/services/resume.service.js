@@ -1,9 +1,11 @@
 import axios from "axios";
 
+const ML_API = process.env.ML_SERVICE_URL;
+
 export const analyzeResume = async (resumeText, jobDescription) => {
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/analyze",
+      `${ML_API}/analyze`,
       {
         resume: resumeText,
         job_description: jobDescription || "",
@@ -12,18 +14,17 @@ export const analyzeResume = async (resumeText, jobDescription) => {
         headers: {
           "Content-Type": "application/json",
         },
+        timeout: 60000,
       }
     );
-    console.log("PYTHON RESPONSE:", response.data)
+
+    console.log("PYTHON RESPONSE:", response.data);
 
     const mlData = response.data;
 
     const detectedSkills = mlData?.resume_analysis?.detected_skills || [];
-
     const careerPaths = mlData?.career_paths || [];
-
     const recommendedJobs = mlData?.job_recommendations || [];
-
     const jobMatchScore = mlData?.job_match_score || 0;
 
     const missingSkillsSet = new Set();
@@ -45,7 +46,7 @@ export const analyzeResume = async (resumeText, jobDescription) => {
       career_paths: careerPaths,
       recommended_jobs: recommendedJobs,
       skillGaps: formattedSkillGaps,
-      live_jobs: mlData?.live_jobs || []
+      live_jobs: mlData?.live_jobs || [],
     };
   } catch (error) {
     console.error("ML Service Error:", error?.response?.data || error.message);
