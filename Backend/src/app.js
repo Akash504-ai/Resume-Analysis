@@ -18,12 +18,24 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://resume-analysis-git-main-akash-santra-s-projects.vercel.app"
-    ],
+    origin: (origin, callback) => {
+      const allowed = [
+        "http://localhost:5173",
+        "https://resume-analysis-git-main-akash-santra-s-projects.vercel.app",
+      ];
+
+      if (
+        !origin ||
+        allowed.includes(origin) ||
+        origin.includes("vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
-  })
+  }),
 );
 
 /* using all the routes here */
