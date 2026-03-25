@@ -1,4 +1,4 @@
-# Nexus — AI Resume Analyzer & Interview Platform
+# Nexus - AI Resume Analyzer & Interview Platform
 
 > An AI-powered platform that analyzes resumes, detects skill gaps, recommends jobs, and generates personalized interview strategies using ML + LLMs.
 
