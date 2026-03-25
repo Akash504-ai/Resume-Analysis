@@ -1,3 +1,68 @@
+# Nexus — AI Resume Analyzer & Interview Platform
+
+> An AI-powered platform that analyzes resumes, detects skill gaps, recommends jobs, and generates personalized interview strategies using ML + LLMs.
+
+---
+
+## 🌐 Live Demo
+
+🔗 https://resume-analysis-gray-five.vercel.app
+
+---
+
+## ✨ Features
+
+### 🧠 AI Resume Analysis
+
+* NLP-based resume parsing
+* Skill extraction & matching
+* Resume-to-job compatibility score
+* Missing skills detection
+
+### 💼 Job Recommendations
+
+* Fetches top matching jobs based on resume
+* Direct redirection to job application pages
+
+### 🤖 AI Interview Preparation (LLM Powered)
+
+* Technical questions generation
+* Behavioral questions generation
+* Personalized interview roadmap
+
+### 🔐 Authentication System
+
+* Email OTP verification
+* Secure JWT-based authentication
+* Forgot password functionality
+
+### 📊 Smart Dashboard
+
+* Resume history tracking
+* Performance analytics
+* Skill improvement insights
+
+### 👤 Profile System
+
+* Bio, skills, and career goals
+* Social links (LeetCode, GitHub, etc.)
+* Custom skill addition
+
+### 💬 Community Chat
+
+* Real-time chat (Socket.io)
+* Reactions, replies, media sharing
+* Toxicity detection (ML model)
+
+### ⚙️ API Key System
+
+* Bring your own Groq API key
+* Unlock advanced AI features
+
+---
+
+## 🏗️ Architecture Diagram
+
 ```mermaid
 graph TD
 
@@ -122,3 +187,177 @@ E1 --> A3
 E2 --> A3
 E3 --> A3
 ```
+
+---
+
+## 🔁 Workflow
+
+1. User registers and verifies email via OTP
+2. Uploads resume + optional job description
+3. ML model analyzes resume:
+
+   * Skill match %
+   * Missing skills
+   * Career suggestions
+4. System fetches job recommendations
+5. Optional: Add Groq API key
+6. LLM generates:
+
+   * Technical questions
+   * Behavioral questions
+   * Interview roadmap
+7. User tracks progress via dashboard
+
+---
+
+## 📸 Screenshots
+
+### 🏠 Landing Page
+
+![Landing](./assets/landing.png)
+
+### 🔐 Authentication
+
+![Auth](./assets/auth.png)
+
+### 📊 Dashboard
+
+![Dashboard](./assets/dashboard.png)
+
+### 📄 Resume Analysis Result
+
+![Analysis](./assets/analysis.png)
+
+### 👤 Profile Section
+
+![Profile](./assets/profile.png)
+
+### 💬 Community Chat
+
+![Chat](./assets/chat.png)
+
+### ⚙️ Settings (API Key)
+
+![Settings](./assets/settings.png)
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React.js
+* Tailwind CSS / SCSS
+* Context API / Redux
+* Socket.io Client
+
+### Backend
+
+* Node.js
+* Express.js
+* JWT Authentication
+* REST APIs
+
+### Database
+
+* MongoDB
+
+### AI / ML
+
+* Python (FastAPI)
+* NLP (Resume parsing & scoring)
+* Custom ML Models
+
+### LLM Integration
+
+* Groq API
+
+### External Services
+
+* Email OTP Service
+* Job Scraping APIs
+* Cloud Storage
+
+---
+
+## ⚡ Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/repo-name.git
+cd repo-name
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup environment variables
+
+Create `.env` file:
+
+```env
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+EMAIL_SERVICE_API=your_email_api
+GROQ_API_KEY=optional
+```
+
+### 4. Run the app
+
+```bash
+npm run dev
+```
+
+---
+
+## 🤝 Contribution Guide
+
+1. Fork the repository
+2. Create a new branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Make changes
+4. Commit
+
+```bash
+git commit -m "Added new feature"
+```
+
+5. Push
+
+```bash
+git push origin feature-name
+```
+
+6. Open Pull Request
+
+---
+
+## 📌 Roadmap
+
+* [ ] LeetCode-style skill grading system
+* [ ] AI mock interviews (voice-based)
+* [ ] Resume auto-enhancement
+* [ ] Recruiter dashboard
+* [ ] Analytics improvements
+
+---
+
+## ⭐ Support
+
+If you like this project, please ⭐ the repo!
+
+---
+
+## 👨‍💻 Author
+
+**Akash Santra**
+
+---
