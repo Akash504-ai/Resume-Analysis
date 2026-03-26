@@ -394,13 +394,29 @@ npm install
 
 ### 3. Setup environment variables
 
-Create `.env` file:
+Create a `.env` file in the root of your backend:
 
-```env
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-EMAIL_SERVICE_API=your_email_api
-GROQ_API_KEY=optional
+### Backend (.env)
+
+```
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+PORT=3000
+ENCRYPTION_KEY=your_32_char_encryption_key
+
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+
+ML_SERVICE_URL=your_ml_service_url
+GOOGLE_GENAI_API_KEY=your_google_api_key
+BREVO_API_KEY=your_brevo_api_key
+```
+
+### Frontend (.env)
+
+```
+VITE_BACKEND_URL=your_backend_url
 ```
 
 ### 4. Run the app
