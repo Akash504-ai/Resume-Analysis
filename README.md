@@ -1,3 +1,7 @@
+![Banner](./assets/banner.png)
+
+<br/>
+
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Tech](https://img.shields.io/badge/stack-MERN-blue)
 ![AI](https://img.shields.io/badge/AI-ML%20%2B%20LLM-purple)
