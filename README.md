@@ -13,57 +13,57 @@
 
 ---
 
-## 🌐 Live Demo
+## Live Demo
 
 🔗 https://resume-analysis-gray-five.vercel.app
 
 ---
 
-## ✨ Features
+## Features
 
-### 🧠 AI Resume Analysis
+### AI Resume Analysis
 
 * NLP-based resume parsing
 * Skill extraction & matching
 * Resume-to-job compatibility score
 * Missing skills detection
 
-### 💼 Job Recommendations
+### Job Recommendations
 
 * Fetches top matching jobs based on resume
 * Direct redirection to job application pages
 
-### 🤖 AI Interview Preparation (LLM Powered)
+### AI Interview Preparation (LLM Powered)
 
 * Technical questions generation
 * Behavioral questions generation
 * Personalized interview roadmap
 
-### 🔐 Authentication System
+### Authentication System
 
 * Email OTP verification
 * Secure JWT-based authentication
 * Forgot password functionality
 
-### 📊 Smart Dashboard
+### Smart Dashboard
 
 * Resume history tracking
 * Performance analytics
 * Skill improvement insights
 
-### 👤 Profile System
+### Profile System
 
 * Bio, skills, and career goals
 * Social links (LeetCode, GitHub, etc.)
 * Custom skill addition
 
-### 💬 Community Chat
+### Community Chat
 
 * Real-time chat (Socket.io)
 * Reactions, replies, media sharing
 * Toxicity detection (ML model)
 
-### ⚙️ API Key System
+### API Key System
 
 * Bring your own Groq API key
 * Unlock advanced AI features
@@ -199,7 +199,7 @@ E3 --> A3
 
 ---
 
-## 🔁 Workflow
+## Workflow
 
 1. User registers and verifies email via OTP
 2. Uploads resume + optional job description
@@ -289,7 +289,95 @@ E3 --> A3
 
 ---
 
-## ⚡ Installation
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint                  | Description                            |
+| ------ | ------------------------- | -------------------------------------- |
+| POST   | /api/auth/register        | Register a new user                    |
+| POST   | /api/auth/login           | Authenticate user and return token     |
+| POST   | /api/auth/logout          | Logout user                            |
+| GET    | /api/auth/get-me          | Get current authenticated user details |
+| POST   | /api/auth/forgot-password | Send OTP to user's email               |
+| POST   | /api/auth/verify-otp      | Verify OTP for password reset          |
+| POST   | /api/auth/reset-password  | Reset user password                    |
+
+---
+
+### Resume & Analysis
+
+| Method | Endpoint                   | Description                                                                            |
+| ------ | -------------------------- | -------------------------------------------------------------------------------------- |
+| POST   | /api/resume/analyze-resume | Analyze resume using NLP model and return match score, missing skills, and suggestions |
+
+---
+
+### Interview (AI + LLM)
+
+| Method | Endpoint                                     | Description                                      |
+| ------ | -------------------------------------------- | ------------------------------------------------ |
+| POST   | /api/interview                               | Generate interview report from resume (ML + LLM) |
+| GET    | /api/interview                               | Get all interview reports for user               |
+| GET    | /api/interview/report/:interviewId           | Get specific interview report                    |
+| POST   | /api/interview/resume/pdf/:interviewReportId | Generate downloadable resume PDF                 |
+
+---
+
+### Plans / Roadmap
+
+| Method | Endpoint                                         | Description                          |
+| ------ | ------------------------------------------------ | ------------------------------------ |
+| POST   | /api/plans                                       | Create a new learning/interview plan |
+| GET    | /api/plans                                       | Get all user plans                   |
+| GET    | /api/plans/:planId                               | Get plan by ID                       |
+| PATCH  | /api/plans/:planId/day/:dayIndex/task/:taskIndex | Toggle task completion               |
+| POST   | /api/plans/:planId/day/:dayIndex                 | Add new task                         |
+| DELETE | /api/plans/:planId/day/:dayIndex/task/:taskIndex | Delete task                          |
+
+---
+
+### Profile
+
+| Method | Endpoint                  | Description              |
+| ------ | ------------------------- | ------------------------ |
+| POST   | /api/profile/create       | Create user profile      |
+| GET    | /api/profile/me           | Get current user profile |
+| PUT    | /api/profile/update       | Update profile details   |
+| POST   | /api/profile/upload-image | Upload profile image     |
+
+---
+
+### Settings
+
+| Method | Endpoint                    | Description              |
+| ------ | --------------------------- | ------------------------ |
+| POST   | /api/settings/save-grok-key | Save user's Groq API key |
+
+---
+
+### File Upload
+
+| Method | Endpoint    | Description                        |
+| ------ | ----------- | ---------------------------------- |
+| POST   | /api/upload | Upload files (resume, media, etc.) |
+
+---
+
+### Admin
+
+| Method | Endpoint             | Description                          |
+| ------ | -------------------- | ------------------------------------ |
+| GET    | /api/admin/stats     | Get platform statistics (admin only) |
+| GET    | /api/admin/users     | Get all users (admin only)           |
+| DELETE | /api/admin/users/:id | Delete a user (admin only)           |
+
+---
+
+
+---
+
+## Installation
 
 ### 1. Clone the repository
 
@@ -323,7 +411,7 @@ npm run dev
 
 ---
 
-## 🤝 Contribution Guide
+## Contribution Guide
 
 1. Fork the repository
 2. Create a new branch
@@ -349,7 +437,7 @@ git push origin feature-name
 
 ---
 
-## 📌 Roadmap
+## Roadmap
 
 * [ ] LeetCode-style skill grading system
 * [ ] AI mock interviews (voice-based)
@@ -365,7 +453,7 @@ If you like this project, please ⭐ the repo!
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Akash Santra**
 
