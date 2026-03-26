@@ -354,8 +354,8 @@ async function verifyOtpController(req, res) {
     }
 
     user.isVerified = true;
-    user.resetOTP = null;
-    user.otpExpiry = null;
+    // user.resetOTP = null;
+    // user.otpExpiry = null;
 
     await user.save();
     await emailApi.sendTransacEmail({
@@ -386,11 +386,51 @@ async function resetPasswordController(req, res) {
   try {
     const { email, otp, newPassword } = req.body;
 
+    console.log("REQ BODY:", req.body);
+
+    // ✅ Validate input first
+    if (!email || !otp || !newPassword) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
     const user = await userModel.findOne({ email });
 
-    if (!user || user.resetOTP !== otp) {
+    console.log("DB OTP:", user?.resetOTP);
+
+    // ✅ Check user exists
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // ✅ Check OTP exists
+    if (!user.resetOTP) {
       return res.status(400).json({
-        message: "Invalid request",
+        message: "No OTP found. Request a new one.",
+      });
+    }
+
+    // ✅ Compare OTP safely (trim + string)
+    if (user.resetOTP.trim() !== String(otp).trim()) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    // ✅ Check expiry
+    if (!user.otpExpiry || user.otpExpiry < Date.now()) {
+      return res.status(400).json({
+        message: "OTP expired",
+      });
+    }
+
+    // ✅ Optional: password validation
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
       });
     }
 
@@ -402,11 +442,14 @@ async function resetPasswordController(req, res) {
 
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Password reset successful",
     });
+
   } catch (error) {
-    res.status(500).json({
+    console.error("RESET ERROR:", error);
+
+    return res.status(500).json({
       message: "Server error",
       error: error.message,
     });
