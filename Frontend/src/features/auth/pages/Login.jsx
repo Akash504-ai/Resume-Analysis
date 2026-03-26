@@ -5,22 +5,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { motion } from "framer-motion";
 import { Zap, Mail, Lock, Loader2, ArrowRight } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { loading, handleLogin } = useAuth();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const success = await handleLogin({ email, password });
+    const success = await handleLogin({ email, password });
 
-  if (success) {
-    navigate("/dashboard");
-  }
-};
+    if (success) {
+      navigate("/dashboard");
+    }
+  };
 
   return (
     <div className="relative min-h-screen w-full bg-[#030014] selection:bg-indigo-500/30 overflow-hidden flex items-center justify-center p-6">
@@ -104,19 +106,27 @@ const Login = () => {
                     className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-indigo-400 transition-colors"
                     size={18}
                   />
+
                   <input
                     required
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-6 outline-none text-white focus:border-indigo-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
+                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-14 outline-none text-white focus:border-indigo-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-indigo-400 transition"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* ACTION BUTTON */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
