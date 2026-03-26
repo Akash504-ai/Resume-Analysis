@@ -221,33 +221,94 @@ E3 --> A3
 
 ## 📸 Screenshots
 
-### 🏠 Landing Page
-
-![Landing](./assets/landing.png)
-
 ### 🔐 Authentication
 
-![Auth](./assets/auth.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/21da6b2c-d727-47ea-9248-a3fbaab4481c" width="800"/>
+</p>
+
+---
+
+### 🏠 Landing Page (Mobile View)
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/af8b8675-d740-4f1b-a899-dea87d49d6fa" width="22%"/>
+  <img src="https://github.com/user-attachments/assets/518a6800-9dcc-47a6-9209-037ee7b2b4af" width="22%"/>
+  <img src="https://github.com/user-attachments/assets/93444d8e-259f-42c2-bfab-ba5142fbd797" width="22%"/>
+  <img src="https://github.com/user-attachments/assets/414e2a21-5e06-47ee-a541-d0a9ba22717c" width="22%"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/da7a272b-74c3-4844-b186-bcf0eab6ef4d" width="22%"/>
+  <img src="https://github.com/user-attachments/assets/46c5191f-9299-437f-af2b-6887960f28a0" width="22%"/>
+  <img src="https://github.com/user-attachments/assets/70da5389-1c84-4a7c-bdd8-09bc2b3fa253" width="22%"/>
+  <img src="https://github.com/user-attachments/assets/ac77e150-82c0-4ac3-a9a2-c30ff70133fe" width="22%"/>
+</p>
+
+---
 
 ### 📊 Dashboard
 
-![Dashboard](./assets/dashboard.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/364baf5e-b8aa-4389-a102-b225f63bbba5" width="100%"/>
+</p>
+
+---
+
+### 💳 My Plan
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/daca7ee9-cfc4-481a-a1ff-2ada630c0151" width="100%"/>
+</p>
+
+---
 
 ### 📄 Resume Analysis Result
 
-![Analysis](./assets/analysis.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c70c44cd-ca94-4dd5-ae1c-f70db2eab412" width="48%"/>
+  <img src="https://github.com/user-attachments/assets/025af4f7-e847-4f05-b4f6-ae4c5f349cc9" width="48%"/>
+</p>
+
+#### 📱 Mobile View
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/147de796-1f87-4f3d-8764-903af40b0aaf" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/3e173492-cc60-4566-84cc-8bcce18138c4" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/5c5c0fe0-fe0c-471d-b68e-c5cba5f4bfa6" width="30%"/>
+</p>
+
+---
 
 ### 👤 Profile Section
 
-![Profile](./assets/profile.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ad63dc80-e370-4f0b-bfc5-5c8967c33fbd" width="100%"/>
+</p>
+
+---
 
 ### 💬 Community Chat
 
-![Chat](./assets/chat.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ffbf0349-044b-4c3e-af2d-4c6ccf31e1e2" width="100%"/>
+</p>
+
+---
 
 ### ⚙️ Settings (API Key)
 
-![Settings](./assets/settings.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ce0988b7-fdca-4299-ae18-b201997f14ba" width="100%"/>
+</p>
+
+---
+
+### 🛠️ Admin Dashboard
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2bd619c0-aede-4c46-ba7e-1ae47bb8aaf6" width="60%"/>
+</p>
 
 ---
 
