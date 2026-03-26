@@ -266,15 +266,20 @@ E3 --> A3
 ### 📄 Resume Analysis Result
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c70c44cd-ca94-4dd5-ae1c-f70db2eab412" width="48%"/>
-  <img src="https://github.com/user-attachments/assets/025af4f7-e847-4f05-b4f6-ae4c5f349cc9" width="48%"/>
+  <img src="https://github.com/user-attachments/assets/c70c44cd-ca94-4dd5-ae1c-f70db2eab412" width="90%"/>
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/17e73dcb-6872-4c9c-8e32-6722eb094faa" width="30%" />
+  <img src="https://github.com/user-attachments/assets/2152ec5d-ea3c-450d-b863-acd9aeb4263a" width="30%" />
+  <img src="https://github.com/user-attachments/assets/2c627902-227c-44c4-aa42-c2cdc33bc623" width="30%" />
 </p>
 
 #### 📱 Mobile View
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/147de796-1f87-4f3d-8764-903af40b0aaf" width="30%"/>
-  <img src="https://github.com/user-attachments/assets/3e173492-cc60-4566-84cc-8bcce18138c4" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/c314c3e1-35e3-46b3-9916-0c9443219939" width="30%"/>
   <img src="https://github.com/user-attachments/assets/5c5c0fe0-fe0c-471d-b68e-c5cba5f4bfa6" width="30%"/>
 </p>
 
@@ -307,7 +312,8 @@ E3 --> A3
 ### 🛠️ Admin Dashboard
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/2bd619c0-aede-4c46-ba7e-1ae47bb8aaf6" width="60%"/>
+  <img src="https://github.com/user-attachments/assets/f064758d-7fd2-4c4f-9420-82a96830ca3d" width="48%" />
+  <img src="https://github.com/user-attachments/assets/1cc8f4e1-10b9-4961-9575-26222fcc9d58" width="48%" />
 </p>
 
 ---
