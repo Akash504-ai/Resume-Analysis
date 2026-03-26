@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 import {
   Lock,
   ShieldAlert,
@@ -17,6 +18,8 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -118,14 +121,30 @@ const ResetPassword = () => {
                   className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-indigo-500 transition-colors"
                   size={18}
                 />
-                <input
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-6 outline-none text-white focus:border-indigo-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
-                />
+                <div className="relative group">
+                  <Lock
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-indigo-500 transition-colors"
+                    size={18}
+                  />
+
+                  <input
+                    required
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-14 outline-none text-white focus:border-indigo-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
+                  />
+
+                  {/* 👁️ */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-indigo-400 transition"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -149,14 +168,34 @@ const ResetPassword = () => {
                   className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-fuchsia-500 transition-colors"
                   size={18}
                 />
-                <input
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-6 outline-none text-white focus:border-fuchsia-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
-                />
+                <div className="relative group">
+                  <Lock
+                    className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-fuchsia-500 transition-colors"
+                    size={18}
+                  />
+
+                  <input
+                    required
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-14 outline-none text-white focus:border-fuchsia-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
+                  />
+
+                  {/* 👁️ */}
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-fuchsia-400 transition"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
