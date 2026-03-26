@@ -5,12 +5,14 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { motion } from "framer-motion";
 import { Zap, Mail, Lock, User, Loader2, ArrowRight } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { loading, handleRegister } = useAuth();
 
   const handleSubmit = async (e) => {
@@ -109,14 +111,42 @@ const Register = () => {
                     className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-pink-500 transition-colors"
                     size={18}
                   />
-                  <input
-                    required
-                    type={field.type}
-                    placeholder={field.placeholder}
-                    value={field.val}
-                    onChange={(e) => field.set(e.target.value)}
-                    className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-6 outline-none text-white focus:border-pink-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
-                  />
+                  <div className="relative group">
+                    <field.icon
+                      className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-pink-500 transition-colors"
+                      size={18}
+                    />
+
+                    <input
+                      required
+                      type={
+                        field.label === "Access Key"
+                          ? showPassword
+                            ? "text"
+                            : "password"
+                          : field.type
+                      }
+                      placeholder={field.placeholder}
+                      value={field.val}
+                      onChange={(e) => field.set(e.target.value)}
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl py-5 pl-14 pr-14 outline-none text-white focus:border-pink-500/50 focus:bg-black/80 transition-all placeholder:text-gray-700"
+                    />
+
+                    {/* 👁️ Only for password */}
+                    {field.label === "Access Key" && (
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-pink-400 transition"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
