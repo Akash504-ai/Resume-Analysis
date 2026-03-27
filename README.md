@@ -266,7 +266,7 @@ E3 --> A3
 ### 📄 Resume Analysis Result
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c70c44cd-ca94-4dd5-ae1c-f70db2eab412" width="90%"/>
+  <img src="https://github.com/user-attachments/assets/c70c44cd-ca94-4dd5-ae1c-f70db2eab412" width="91.5%"/>
 </p>
 
 <p align="center">
@@ -274,8 +274,6 @@ E3 --> A3
   <img src="https://github.com/user-attachments/assets/2152ec5d-ea3c-450d-b863-acd9aeb4263a" width="30%" />
   <img src="https://github.com/user-attachments/assets/2c627902-227c-44c4-aa42-c2cdc33bc623" width="30%" />
 </p>
-
-#### 📱 Mobile View
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/147de796-1f87-4f3d-8764-903af40b0aaf" width="30%"/>
@@ -517,18 +515,6 @@ git push origin feature-name
 ```
 
 6. Open Pull Request
-
----
-
-## Roadmap
-
-* [ ] LeetCode-style skill grading system
-* [ ] AI mock interviews (voice-based)
-* [ ] Resume auto-enhancement
-* [ ] Recruiter dashboard
-* [ ] Analytics improvements
-
----
 
 ## ⭐ Support
 
