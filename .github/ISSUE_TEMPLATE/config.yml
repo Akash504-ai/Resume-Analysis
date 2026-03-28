@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security Issues
+    url: ./SECURITY.md
+    about: Please report security vulnerabilities here
+
+  - name: Contribution Guide
+    url: ./CONTRIBUTING.md
+    about: Read how to contribute before creating issues
