@@ -429,7 +429,7 @@ E3 --> A3
 
 ---
 
-### Admin
+### Admin (Protected Routes)
 
 | Method | Endpoint             | Description                          |
 | ------ | -------------------- | ------------------------------------ |
@@ -439,6 +439,12 @@ E3 --> A3
 
 ---
 
+### Admin Panel
+
+* Secure admin dashboard access
+* View all registered users
+* Delete users from the platform
+* Monitor platform activity and statistics
 
 ---
 
