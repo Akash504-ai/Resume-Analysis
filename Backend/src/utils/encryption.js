@@ -12,9 +12,7 @@ if (!secretKey) {
 // Convert key to buffer
 const key = Buffer.from(secretKey, "utf-8").slice(0, 32);
 
-/**
- * Encrypt text
- */
+// Encrypt text
 export function encrypt(text) {
   const iv = crypto.randomBytes(16);
 
@@ -26,9 +24,7 @@ export function encrypt(text) {
   return iv.toString("hex") + ":" + encrypted;
 }
 
-/**
- * Decrypt text
- */
+// Decrypt text
 export function decrypt(encryptedText) {
   const parts = encryptedText.split(":");
 

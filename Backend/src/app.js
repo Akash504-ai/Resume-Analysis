@@ -33,7 +33,6 @@ app.use(
   })
 );
 
-/* using all the routes here */
 app.use("/api/auth", authRouter);
 app.use("/api/interview", interviewRouter);
 app.use("/api/plans", planRouter);
