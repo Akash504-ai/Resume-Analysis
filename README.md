@@ -550,5 +550,6 @@ If you like this project, please ⭐ the repo!
 
 - Contribution Guidelines: [CONTRIBUTING.md](./CONTRIBUTING.md)  
 - Security Policy: [SECURITY.md](./SECURITY.md)
+- Code of Conduct: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 
 ---
