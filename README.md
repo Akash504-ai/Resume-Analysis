@@ -545,3 +545,10 @@ If you like this project, please ⭐ the repo!
 **Akash Santra**
 
 ---
+
+## Additional Information
+
+- Contribution Guidelines: [CONTRIBUTING.md](./CONTRIBUTING.md)  
+- Security Policy: [SECURITY.md](./SECURITY.md)
+
+---
