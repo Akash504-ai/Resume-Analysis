@@ -70,6 +70,18 @@
 
 ---
 
+## ML System Highlights
+
+- Built a separate FastAPI microservice for ML inference  
+- Implemented resume-job matching using TF-IDF and cosine similarity  
+- Developed spam detection (Naive Bayes) and toxicity detection (Logistic Regression)  
+- Hosted large ML models externally using Hugging Face for scalable deployment  
+- Integrated real-time ML inference into a full-stack MERN application  
+
+For detailed architecture and implementation, see [ML Service Documentation](./ml-service.md)
+
+---
+
 ## 🏗️ Architecture Diagram
 
 ```mermaid
