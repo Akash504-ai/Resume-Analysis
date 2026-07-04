@@ -11,10 +11,6 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const emailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
-/* =========================
-   Register User
-========================= */
-
 async function registerUserController(req, res) {
   try {
     const { username, email, password } = req.body;
@@ -159,10 +155,6 @@ async function registerUserController(req, res) {
   }
 }
 
-/* =========================
-   Login User
-========================= */
-
 async function loginUserController(req, res) {
   try {
     const { email, password } = req.body;
@@ -203,14 +195,14 @@ async function loginUserController(req, res) {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true, // ✅ IMPORTANT
-      sameSite: "none", // ✅ IMPORTANT
+      secure: true, 
+      sameSite: "none", 
       path: "/",
     });
 
     res.status(200).json({
       message: "User logged in successfully",
-      token, // ✅ ADD THIS
+      token, 
       user: {
         id: user._id,
         username: user.username,
@@ -225,10 +217,6 @@ async function loginUserController(req, res) {
     });
   }
 }
-
-/* =========================
-   Logout User
-========================= */
 
 async function logoutUserController(req, res) {
   try {
@@ -255,10 +243,6 @@ async function logoutUserController(req, res) {
     });
   }
 }
-
-/* =========================
-   Get Current User
-========================= */
 
 async function getMeController(req, res) {
   try {
@@ -388,7 +372,7 @@ async function resetPasswordController(req, res) {
 
     console.log("REQ BODY:", req.body);
 
-    // ✅ Validate input first
+    // Validate input first
     if (!email || !otp || !newPassword) {
       return res.status(400).json({
         message: "All fields are required",
@@ -399,35 +383,35 @@ async function resetPasswordController(req, res) {
 
     console.log("DB OTP:", user?.resetOTP);
 
-    // ✅ Check user exists
+    // Check user exists
     if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
     }
 
-    // ✅ Check OTP exists
+    // Check OTP exists
     if (!user.resetOTP) {
       return res.status(400).json({
         message: "No OTP found. Request a new one.",
       });
     }
 
-    // ✅ Compare OTP safely (trim + string)
+    // Compare OTP safely (trim + string)
     if (user.resetOTP.trim() !== String(otp).trim()) {
       return res.status(400).json({
         message: "Invalid OTP",
       });
     }
 
-    // ✅ Check expiry
+    // Check expiry
     if (!user.otpExpiry || user.otpExpiry < Date.now()) {
       return res.status(400).json({
         message: "OTP expired",
       });
     }
 
-    // ✅ Optional: password validation
+    // Optional: password validation
     if (newPassword.length < 6) {
       return res.status(400).json({
         message: "Password must be at least 6 characters",
