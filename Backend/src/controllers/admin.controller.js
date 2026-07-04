@@ -3,7 +3,6 @@ import interviewReportModel from "../models/interviewReport.model.js";
 import messageModel from "../models/message.model.js";    
 
 // Get Platform Stats
-
 export const getAdminStats = async (req, res) => {
   try {
 
@@ -27,7 +26,6 @@ export const getAdminStats = async (req, res) => {
 
 
 // Get All Users
-
 export const getAllUsers = async (req, res) => {
   try {
 
@@ -50,7 +48,6 @@ export const getAllUsers = async (req, res) => {
 
 
 // Delete User
-
 export const deleteUser = async (req, res) => {
   try {
 
